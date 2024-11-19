@@ -190,7 +190,19 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	// Set header to trigger modal close
+	c.Writer.Header().Set("HX-Trigger", "closeModal")
+
+	// After successful update, fetch all plants
+	plants, err := h.plantService.GetPlants()
+	if err != nil {
+		log.Printf("Error fetching plants: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Writer.Header().Set("Content-Type", "text/html")
+	templ.Handler(pages.PlantsGrid(plants)).ServeHTTP(c.Writer, c.Request)
 }
 
 func (h *PlantHandler) HandleDeletePlant(c *gin.Context) {

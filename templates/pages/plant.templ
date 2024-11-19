@@ -155,7 +155,11 @@ templ EditPlantForm(plant types.Plant) {
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
     </div>
     <div class="modal-body">
-        <form id="plantForm" hx-put={fmt.Sprintf("/plants/%d", plant.ID)} hx-encoding="multipart/form-data">
+        <form id="plantForm"
+              hx-put={fmt.Sprintf("/plants/%d", plant.ID)}
+              hx-encoding="multipart/form-data"
+              hx-target="#plantGrid"
+              hx-swap="outerHTML">
             <div class="mb-3">
                 <label class="form-label">Name</label>
                 <input type="text" class="form-control" name="name" value={plant.Name} required/>
@@ -211,9 +215,7 @@ templ EditPlantForm(plant types.Plant) {
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary" form="plantForm">
-            Save Changes
-        </button>
+        <button type="submit" class="btn btn-primary" form="plantForm">Save Changes</button>
     </div>
 }
 
