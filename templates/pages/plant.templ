@@ -222,7 +222,7 @@ templ EditPlantForm(plant types.Plant) {
 templ PlantsGrid(plants []types.Plant) {
     <div class="row g-4" id="plantGrid">
         for _, plant := range plants {
-            <div class="col-md-4">
+            <div class="col-md-4" id={fmt.Sprintf("plant-%d", plant.ID)}>
                 <div class="card h-100">
                     if plant.ImagePath != "" {
                         <img src={plant.ImagePath} class="card-img-top" alt={plant.Name}/>
@@ -246,7 +246,9 @@ templ PlantsGrid(plants []types.Plant) {
                             </button>
                             <button class="btn btn-sm btn-outline-danger"
                                     hx-delete={fmt.Sprintf("/plants/%d", plant.ID)}
-                                    hx-confirm="Are you sure you want to delete this plant?">
+                                    hx-confirm="Are you sure you want to delete this plant?"
+                                    hx-target={fmt.Sprintf("#plant-%d", plant.ID)}
+                                    hx-swap="outerHTML">
                                 Delete
                             </button>
                             <button class="btn btn-sm btn-outline-secondary"

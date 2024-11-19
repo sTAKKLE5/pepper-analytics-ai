@@ -215,5 +215,6 @@ func (h *PlantHandler) HandleDeletePlant(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.Writer.Header().Set("Content-Type", "text/html")
+	c.String(http.StatusOK, "")
 }
