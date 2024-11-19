@@ -31,7 +31,7 @@ templ Plant(plants []types.Plant) {
                             <div class="card-body">
                                 <h5 class="card-title">{plant.Name}</h5>
                                 <p class="card-text">
-                                    <small class="text-muted">{plant.Species}</small>
+                                    <small class="text-muted">{string(plant.Species)}</small>
                                 </p>
                                 <div class="mb-2">
                                     <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
@@ -92,7 +92,21 @@ templ NewPlantForm() {
            </div>
            <div class="mb-3">
                <label class="form-label">Species</label>
-               <input type="text" class="form-control" name="species"/>
+               <select class="form-select" name="species" required>
+                   <option value="Capsicum annuum">Capsicum annuum</option>
+                   <option value="Capsicum chinense">Capsicum chinense</option>
+                   <option value="Capsicum baccatum">Capsicum baccatum</option>
+                   <option value="Capsicum frutescens">Capsicum frutescens</option>
+                   <option value="Capsicum pubescens">Capsicum pubescens</option>
+                   <option value="Capsicum rhomboideum">Capsicum rhomboideum</option>
+                   <option value="Capsicum praetermissum">Capsicum praetermissum</option>
+                   <option value="Capsicum cardenasii">Capsicum cardenasii</option>
+                   <option value="Capsicum eximium">Capsicum eximium</option>
+                   <option value="Capsicum galapagoense">Capsicum galapagoense</option>
+                   <option value="Capsicum tovarii">Capsicum tovarii</option>
+                   <option value="Capsicum flexuosum">Capsicum flexuosum</option>
+                   <option value="Capsicum exile">Capsicum exile</option>
+               </select>
            </div>
            <div class="mb-3">
                <label class="form-label">Seeding Date</label>
@@ -148,7 +162,23 @@ templ EditPlantForm(plant types.Plant) {
             </div>
             <div class="mb-3">
                 <label class="form-label">Species</label>
-                <input type="text" class="form-control" name="species" value={plant.Species}/>
+                <select class="form-select" name="species" required>
+                <option value="Capsicum annuum" selected?={string(plant.Species) == "Capsicum annuum"}>Capsicum annuum</option>
+                <option value="Capsicum chinense" selected?={string(plant.Species) == "Capsicum chinense"}>Capsicum chinense</option>
+                <option value="Capsicum baccatum" selected?={string(plant.Species) == "Capsicum baccatum"}>Capsicum baccatum</option>
+                <option value="Capsicum frutescens" selected?={string(plant.Species) == "Capsicum frutescens"}>Capsicum frutescens</option>
+                <option value="Capsicum pubescens" selected?={string(plant.Species) == "Capsicum pubescens"}>Capsicum pubescens</option>
+                <option value="Capsicum rhomboideum" selected?={string(plant.Species) == "Capsicum rhomboideum"}>Capsicum rhomboideum</option>
+                <option value="Capsicum praetermissum" selected?={string(plant.Species) == "Capsicum praetermissum"}>Capsicum praetermissum</option>
+                <option value="Capsicum cardenasii" selected?={string(plant.Species) == "Capsicum cardenasii"}>Capsicum cardenasii</option>
+                <option value="Capsicum eximium" selected?={string(plant.Species) == "Capsicum eximium"}>Capsicum eximium</option>
+                <option value="Capsicum galapagoense" selected?={string(plant.Species) == "Capsicum galapagoense"}>Capsicum galapagoense</option>
+                <option value="Capsicum flexuosum" selected?={string(plant.Species) == "Capsicum flexuosum"}>Capsicum flexuosum</option>
+                <option value="Capsicum flexuosum" selected?={string(plant.Species) == "Capsicum flexuosum"}>Capsicum flexuosum</option>
+                <option value="Capsicum exile" selected?={string(plant.Species) == "Capsicum exile"}>Capsicum exile</option>
+                </select>
+
+
             </div>
             <div class="mb-3">
                 <label class="form-label">Health</label>
@@ -200,7 +230,7 @@ templ PlantsGrid(plants []types.Plant) {
                     <div class="card-body">
                         <h5 class="card-title">{plant.Name}</h5>
                         <p class="card-text">
-                            <small class="text-muted">{plant.Species}</small>
+                            <small class="text-muted">{string(plant.Species)}</small>
                         </p>
                         <div class="mb-2">
                             <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>

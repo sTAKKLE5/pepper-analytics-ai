@@ -67,9 +67,16 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 		return
 	}
 
+	species, err := types.ParseSpecies(c.PostForm("species"))
+	if err != nil {
+		log.Printf("Error parsing species: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	plant := &types.Plant{
 		Name:         c.PostForm("name"),
-		Species:      c.PostForm("species"),
+		Species:      species,
 		PlantingDate: plantingDate,
 		Health:       health,
 		GrowthStage:  growthStage,
@@ -146,7 +153,10 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	}
 
 	plant.Name = c.PostForm("name")
-	plant.Species = c.PostForm("species")
+
+	if species, err := types.ParseSpecies(c.PostForm("species")); err == nil {
+		plant.Species = species
+	}
 
 	if health, err := types.ParsePlantHealth(c.PostForm("health")); err == nil {
 		plant.Health = health
