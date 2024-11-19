@@ -234,23 +234,28 @@ func (h *PlantHandler) HandleDeletePlant(c *gin.Context) {
 func (h *PlantHandler) HandleJournal(c *gin.Context) {
 	plantID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		log.Printf("Invalid plant ID: %v", err)
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
 	plant, err := h.plantService.GetPlant(plantID)
 	if err != nil {
+		log.Printf("Error getting plant %d: %v", plantID, err)
 		c.Status(http.StatusNotFound)
 		return
 	}
 
 	entries, err := h.plantService.GetJournalEntries(plantID)
 	if err != nil {
+		log.Printf("Error getting journal entries for plant %d: %v", plantID, err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	templ.Handler(pages.Journal(*plant, entries)).ServeHTTP(c.Writer, c.Request)
+	component := pages.Journal(*plant, entries)
+	c.Writer.Header().Set("Content-Type", "text/html")
+	component.Render(context.Background(), c.Writer)
 }
 
 func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {
@@ -260,11 +265,19 @@ func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {
 		return
 	}
 
+	entryDate, err := time.Parse("2006-01-02", c.PostForm("entry_date"))
+	if err != nil {
+		log.Printf("Error parsing entry date: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid entry date"})
+		return
+	}
+
 	entry := &types.JournalEntry{
 		PlantID:     plantID,
 		Title:       c.PostForm("title"),
 		EntryType:   c.PostForm("entry_type"),
 		Description: c.PostForm("description"),
+		EntryDate:   entryDate,
 	}
 
 	// Handle image upload if present

@@ -1,7 +1,9 @@
 package services
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
+	"log"
 	"pepper-analytics-ai/internal/types"
 )
 
@@ -96,27 +98,44 @@ func (s *PlantService) DeletePlant(id int) error {
 func (s *PlantService) GetJournalEntries(plantID int) ([]types.JournalEntry, error) {
 	var entries []types.JournalEntry
 	query := `
-        SELECT * FROM journal_entries 
+        SELECT id, plant_id, title, entry_type, description, image_path, 
+               entry_date, created_at, updated_at 
+        FROM journal_entries 
         WHERE plant_id = $1 
-        ORDER BY created_at DESC
+        ORDER BY entry_date DESC
     `
 	err := s.db.Select(&entries, query, plantID)
-	return entries, err
+	if err != nil {
+		log.Printf("Error fetching journal entries: %v", err)
+		return nil, fmt.Errorf("failed to fetch journal entries: %w", err)
+	}
+	return entries, nil
 }
-
 func (s *PlantService) CreateJournalEntry(entry *types.JournalEntry) error {
 	query := `
         INSERT INTO journal_entries (
-            plant_id, title, entry_type, description, image_path
-        ) VALUES ($1, $2, $3, $4, $5)
+            plant_id, title, entry_type, description, 
+            image_path, entry_date, created_at, updated_at
+        ) VALUES (
+            $1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        )
         RETURNING id, created_at, updated_at
     `
-	return s.db.QueryRow(
+
+	err := s.db.QueryRow(
 		query,
 		entry.PlantID,
 		entry.Title,
 		entry.EntryType,
 		entry.Description,
 		entry.ImagePath,
+		entry.EntryDate,
 	).Scan(&entry.ID, &entry.CreatedAt, &entry.UpdatedAt)
+
+	if err != nil {
+		log.Printf("Error creating journal entry: %v", err)
+		return fmt.Errorf("failed to create journal entry: %w", err)
+	}
+
+	return nil
 }
