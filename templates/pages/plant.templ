@@ -52,13 +52,9 @@ templ Plant(plants []types.Plant) {
                                             hx-confirm="Are you sure you want to delete this plant?">
                                         Delete
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                            hx-get={fmt.Sprintf("/plants/%d/journal", plant.ID)}
-                                            hx-target="#modal-content"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#plantModal">
-                                        Journal
-                                    </button>
+                                    <a href={ templ.SafeURL(fmt.Sprintf("/plants/%d/journal", plant.ID)) } class="btn btn-sm btn-outline-secondary">
+                                        Journal 1
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -251,13 +247,9 @@ templ PlantsGrid(plants []types.Plant) {
                                     hx-swap="outerHTML">
                                 Delete
                             </button>
-                            <button class="btn btn-sm btn-outline-secondary"
-                                    hx-get={fmt.Sprintf("/plants/%d/journal", plant.ID)}
-                                    hx-target="#modal-content"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#plantModal">
-                                Journal
-                            </button>
+                            <a href={ templ.SafeURL(fmt.Sprintf("/plants/%d/journal", plant.ID)) } class="btn btn-sm btn-outline-secondary">
+                            Journal 2
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -92,3 +92,31 @@ func (s *PlantService) DeletePlant(id int) error {
 	}
 	return nil
 }
+
+func (s *PlantService) GetJournalEntries(plantID int) ([]types.JournalEntry, error) {
+	var entries []types.JournalEntry
+	query := `
+        SELECT * FROM journal_entries 
+        WHERE plant_id = $1 
+        ORDER BY created_at DESC
+    `
+	err := s.db.Select(&entries, query, plantID)
+	return entries, err
+}
+
+func (s *PlantService) CreateJournalEntry(entry *types.JournalEntry) error {
+	query := `
+        INSERT INTO journal_entries (
+            plant_id, title, entry_type, description, image_path
+        ) VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, created_at, updated_at
+    `
+	return s.db.QueryRow(
+		query,
+		entry.PlantID,
+		entry.Title,
+		entry.EntryType,
+		entry.Description,
+		entry.ImagePath,
+	).Scan(&entry.ID, &entry.CreatedAt, &entry.UpdatedAt)
+}

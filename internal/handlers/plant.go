@@ -230,3 +230,61 @@ func (h *PlantHandler) HandleDeletePlant(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "text/html")
 	c.String(http.StatusOK, "")
 }
+
+func (h *PlantHandler) HandleJournal(c *gin.Context) {
+	plantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	plant, err := h.plantService.GetPlant(plantID)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	entries, err := h.plantService.GetJournalEntries(plantID)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	templ.Handler(pages.Journal(*plant, entries)).ServeHTTP(c.Writer, c.Request)
+}
+
+func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {
+	plantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entry := &types.JournalEntry{
+		PlantID:     plantID,
+		Title:       c.PostForm("title"),
+		EntryType:   c.PostForm("entry_type"),
+		Description: c.PostForm("description"),
+	}
+
+	// Handle image upload if present
+	file, header, err := c.Request.FormFile("image")
+	if err == nil {
+		defer file.Close()
+
+		filePath := fmt.Sprintf("%s/journal/%s", h.uploadDir, header.Filename)
+		if err := h.fileService.SaveFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save image"})
+			return
+		}
+		entry.ImagePath = filePath
+	}
+
+	if err := h.plantService.CreateJournalEntry(entry); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create journal entry"})
+		return
+	}
+
+	c.Writer.Header().Set("Content-Type", "text/html")
+	templ.Handler(pages.JournalEntry(*entry)).ServeHTTP(c.Writer, c.Request)
+}
