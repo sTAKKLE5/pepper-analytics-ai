@@ -1,0 +1,13 @@
+package pages
+
+import "pepper-analytics-ai/templates/layout"
+
+templ Index(title string) {
+    @layout.Base(layout.BaseProps{
+        Title: title,
+    }) {
+        <div>
+            Welcome to Pepper Analytics AI
+        </div>
+    }
+}

@@ -1,0 +1,33 @@
+package layout
+
+type BaseProps struct {
+    Title           string
+}
+
+templ Base(props BaseProps) {
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>{ props.Title }</title>
+        <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+        <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+        <script src="/js/htmx.min.js"></script>
+    </head>
+    <body>
+        <div>
+            { children... }
+        </div>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.body.addEventListener('closeModal', function() {
+                const modal = bootstrap.Modal.getInstance(document.querySelector('#plantModal'));
+                if (modal) {
+                    modal.hide();
+                }
+            });
+</script>
+    </body>
+    </html>
+}

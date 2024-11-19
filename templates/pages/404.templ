@@ -1,0 +1,13 @@
+package pages
+
+import "pepper-analytics-ai/templates/layout"
+
+templ NotFound(title string) {
+    @layout.Base(layout.BaseProps{
+        Title: title,
+    }) {
+        <div>
+            <a href="/">Return to home</a>
+        </div>
+    }
+}
