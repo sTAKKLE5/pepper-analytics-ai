@@ -154,6 +154,13 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	}
 
 	plant.Name = c.PostForm("name")
+	plantingDate, err := time.Parse("2006-01-02", c.PostForm("planting_date"))
+	if err != nil {
+		log.Printf("Error parsing planting date: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid planting date"})
+		return
+	}
+	plant.PlantingDate = plantingDate
 
 	if species, err := types.ParseSpecies(c.PostForm("species")); err == nil {
 		plant.Species = species
