@@ -122,8 +122,8 @@ func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 	query := `
         UPDATE plants 
         SET name = $1, species = $2, health = $3, growth_stage = $4,
-            image_path = $5, notes = $6, updated_at = CURRENT_TIMESTAMP
-        WHERE id = $7 AND deleted_at IS NULL`
+            image_path = $5, notes = $6, planting_date = $7, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $8 AND deleted_at IS NULL`
 
 	result, err := s.db.Exec(
 		query,
@@ -133,6 +133,7 @@ func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 		plant.GrowthStage,
 		plant.ImagePath,
 		plant.Notes,
+		plant.PlantingDate,
 		plant.ID,
 	)
 	if err != nil {

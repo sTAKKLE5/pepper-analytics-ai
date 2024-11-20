@@ -161,6 +161,14 @@ templ EditPlantForm(plant types.PlantWithDates) {
                 </select>
             </div>
             <div class="mb-3">
+               <label class="form-label">Seeding Date</label>
+               <input type="date"
+                      class="form-control"
+                      name="planting_date"
+                      value={plant.PlantingDate.Format("2006-01-02")}
+                      required/>
+           </div>
+            <div class="mb-3">
                 <label class="form-label">Health</label>
                 <select class="form-select" name="health" required>
                     <option value="Excellent" selected?={string(plant.Health) == "Excellent"}>Excellent</option>
