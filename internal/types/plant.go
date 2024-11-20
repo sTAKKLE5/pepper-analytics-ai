@@ -57,6 +57,22 @@ type Plant struct {
 	UpdatedAt      time.Time   `db:"updated_at"`
 }
 
+type PlantWithDates struct {
+	ID              int         `db:"id"`
+	Name            string      `db:"name"`
+	Species         Species     `db:"species"`
+	Health          PlantHealth `db:"health"`
+	GrowthStage     GrowthStage `db:"growth_stage"`
+	PlantingDate    time.Time   `db:"planting_date"`
+	ImagePath       string      `db:"image_path"`
+	Notes           string      `db:"notes"`
+	CreatedAt       time.Time   `db:"created_at"`
+	UpdatedAt       time.Time   `db:"updated_at"`
+	DeletedAt       *time.Time  `db:"deleted_at"`
+	LastWatering    *time.Time  `db:"last_watered_at"`
+	LastFertilizing *time.Time  `db:"last_fertilized_at"`
+}
+
 type JournalEntry struct {
 	ID          int       `db:"id"`
 	PlantID     int       `db:"plant_id"`

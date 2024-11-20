@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *time.Time, lastFertilizing *time.Time) templ.Component {
+func Journal(plant types.PlantWithDates, entries []types.JournalEntry) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -162,11 +162,11 @@ func Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *time
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if lastWatering != nil {
+			if plant.LastWatering != nil {
 				var templ_7745c5c3_Var11 string
-				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(lastWatering.Format("Jan 02"))
+				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(plant.LastWatering.Format("Jan 02"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/journal.templ`, Line: 41, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/journal.templ`, Line: 41, Col: 72}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -187,11 +187,11 @@ func Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *time
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if lastFertilizing != nil {
+			if plant.LastFertilizing != nil {
 				var templ_7745c5c3_Var13 string
-				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(lastFertilizing.Format("Jan 02"))
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(plant.LastFertilizing.Format("Jan 02"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/journal.templ`, Line: 50, Col: 69}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/journal.templ`, Line: 50, Col: 75}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {

@@ -17,25 +17,94 @@ func NewPlantService(db *sqlx.DB) *PlantService {
 	return &PlantService{db: db}
 }
 
-func (s *PlantService) GetPlants() ([]types.Plant, error) {
-	var plants []types.Plant
-	query := `SELECT * FROM plants WHERE deleted_at IS NULL ORDER BY created_at DESC`
-	err := s.db.Select(&plants, query)
-	return plants, err
-}
-
-func (s *PlantService) GetPlant(id int) (*types.Plant, error) {
-	var plant types.Plant
-	query := `SELECT * FROM plants WHERE id = $1 AND deleted_at IS NULL`
-	err := s.db.Get(&plant, query, id)
-	return &plant, err
-}
-
-func (s *PlantService) CreatePlant(plant *types.Plant) error {
+func (s *PlantService) GetPlants() ([]types.PlantWithDates, error) {
 	query := `
-        INSERT INTO plants (name, species, health, growth_stage, planting_date, image_path, notes)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id, created_at, updated_at`
+        WITH LastWatering AS (
+            SELECT plant_id, MAX(entry_date) as last_watered_at   -- Changed column alias
+            FROM journal_entries
+            WHERE entry_type = 'Watering'
+            GROUP BY plant_id
+        ),
+        LastFertilizing AS (
+            SELECT plant_id, MAX(entry_date) as last_fertilized_at  -- Changed column alias
+            FROM journal_entries
+            WHERE entry_type = 'Fertilizing'
+            GROUP BY plant_id
+        )
+        SELECT p.id,
+               p.name,
+               p.species,
+               p.health,
+               p.growth_stage,
+               p.planting_date,
+               p.image_path,
+               p.notes,
+               p.created_at,
+               p.updated_at,
+               p.deleted_at,
+               lw.last_watered_at,      -- Matches struct tag
+               lf.last_fertilized_at    -- Matches struct tag
+        FROM plants p
+        LEFT JOIN LastWatering lw ON p.id = lw.plant_id
+        LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
+        WHERE p.deleted_at IS NULL
+        ORDER BY p.created_at DESC
+    `
+	var plants []types.PlantWithDates
+	err := s.db.Select(&plants, query)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching plants: %w", err)
+	}
+	return plants, nil
+}
+
+func (s *PlantService) GetPlant(id int) (*types.PlantWithDates, error) {
+	query := `
+        WITH LastWatering AS (
+            SELECT plant_id, entry_date as last_watered_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Watering'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Watering'
+            )
+        ),
+        LastFertilizing AS (
+            SELECT plant_id, entry_date as last_fertilized_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Fertilizing'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Fertilizing'
+            )
+        )
+        SELECT p.*, 
+               lw.last_watered_at,
+               lf.last_fertilized_at
+        FROM plants p
+        LEFT JOIN LastWatering lw ON p.id = lw.plant_id
+        LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
+        WHERE p.id = $1 AND p.deleted_at IS NULL
+    `
+	var plant types.PlantWithDates
+	err := s.db.Get(&plant, query, id)
+	if err != nil {
+		return nil, err
+	}
+	return &plant, nil
+}
+
+func (s *PlantService) CreatePlant(plant *types.PlantWithDates) error {
+	query := `
+        INSERT INTO plants (
+            name, species, health, growth_stage, planting_date, image_path, notes
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, created_at, updated_at
+    `
 
 	return s.db.QueryRow(
 		query,
@@ -49,7 +118,7 @@ func (s *PlantService) CreatePlant(plant *types.Plant) error {
 	).Scan(&plant.ID, &plant.CreatedAt, &plant.UpdatedAt)
 }
 
-func (s *PlantService) UpdatePlant(plant *types.Plant) error {
+func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 	query := `
         UPDATE plants 
         SET name = $1, species = $2, health = $3, growth_stage = $4,
@@ -178,4 +247,42 @@ func (s *PlantService) GetLastFertilizingDate(plantID int) (*time.Time, error) {
 		return nil, err
 	}
 	return &entryDate, nil
+}
+
+func (s *PlantService) GetPlantsWithLastDates() ([]types.PlantWithDates, error) {
+	query := `
+        WITH LastWatering AS (
+            SELECT plant_id, entry_date as last_watered_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Watering'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Watering'
+            )
+        ),
+        LastFertilizing AS (
+            SELECT plant_id, entry_date as last_fertilized_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Fertilizing'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Fertilizing'
+            )
+        )
+        SELECT p.*, 
+               lw.last_watered_at,
+               lf.last_fertilized_at
+        FROM plants p
+        LEFT JOIN LastWatering lw ON p.id = lw.plant_id
+        LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
+        WHERE p.deleted_at IS NULL
+        ORDER BY p.created_at DESC
+    `
+	var plants []types.PlantWithDates
+	err := s.db.Select(&plants, query)
+	return plants, err
 }

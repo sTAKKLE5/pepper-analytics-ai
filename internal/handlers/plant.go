@@ -29,7 +29,7 @@ func NewPlantHandler(plantService *services.PlantService, fileService *services.
 }
 
 func (h *PlantHandler) HandlePlantList(c *gin.Context) {
-	plants, err := h.plantService.GetPlants()
+	plants, err := h.plantService.GetPlantsWithLastDates()
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
@@ -74,7 +74,7 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 		return
 	}
 
-	plant := &types.Plant{
+	plant := &types.PlantWithDates{
 		Name:         c.PostForm("name"),
 		Species:      species,
 		PlantingDate: plantingDate,
@@ -106,7 +106,7 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 	// Set header to trigger modal close
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
-	// After successful creation, fetch all plants
+	// After successful creation, fetch all plants with dates
 	plants, err := h.plantService.GetPlants()
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
@@ -117,6 +117,7 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "text/html")
 	templ.Handler(pages.PlantsGrid(plants)).ServeHTTP(c.Writer, c.Request)
 }
+
 func (h *PlantHandler) HandleNewPlantForm(c *gin.Context) {
 	component := pages.NewPlantForm()
 	_ = component.Render(context.Background(), c.Writer)
@@ -193,7 +194,7 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	// Set header to trigger modal close
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
-	// After successful update, fetch all plants
+	// After successful update, fetch all plants with dates
 	plants, err := h.plantService.GetPlants()
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
@@ -234,40 +235,23 @@ func (h *PlantHandler) HandleDeletePlant(c *gin.Context) {
 func (h *PlantHandler) HandleJournal(c *gin.Context) {
 	plantID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("Invalid plant ID: %v", err)
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
 	plant, err := h.plantService.GetPlant(plantID)
 	if err != nil {
-		log.Printf("Error getting plant %d: %v", plantID, err)
 		c.Status(http.StatusNotFound)
 		return
 	}
 
 	entries, err := h.plantService.GetJournalEntries(plantID)
 	if err != nil {
-		log.Printf("Error getting journal entries for plant %d: %v", plantID, err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	lastWatering, err := h.plantService.GetLastWateringDate(plantID)
-	if err != nil {
-		log.Printf("Error getting last watering date: %v", err)
-		// Don't return error, just continue without the date
-	}
-
-	lastFertilizing, err := h.plantService.GetLastFertilizingDate(plantID)
-	if err != nil {
-		log.Printf("Error getting last fertilizing date: %v", err)
-		// Don't return error, just continue without the date
-	}
-
-	component := pages.Journal(*plant, entries, lastWatering, lastFertilizing)
-	c.Writer.Header().Set("Content-Type", "text/html")
-	component.Render(context.Background(), c.Writer)
+	templ.Handler(pages.Journal(*plant, entries)).ServeHTTP(c.Writer, c.Request)
 }
 
 func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {

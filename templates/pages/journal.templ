@@ -7,7 +7,7 @@ import (
     "time"
 )
 
-templ Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *time.Time, lastFertilizing *time.Time) {
+templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
     @layout.Base(layout.BaseProps{Title: fmt.Sprintf("Journal - %s", plant.Name)}) {
         <div class="container mt-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -37,8 +37,8 @@ templ Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *tim
                             <span class="badge bg-info me-2">
                                 <i class="bi bi-droplet me-1"></i>
                                 Watering️:
-                                if lastWatering != nil {
-                                    {lastWatering.Format("Jan 02")}
+                                if plant.LastWatering != nil {
+                                    {plant.LastWatering.Format("Jan 02")}
                                 } else {
                                     {"No record"}
                                 }
@@ -46,8 +46,8 @@ templ Journal(plant types.Plant, entries []types.JournalEntry, lastWatering *tim
                             <span class="badge bg-success">
                                 <i class="bi bi-flower1 me-1"></i>
                                 Fertilizing:
-                                if lastFertilizing != nil {
-                                    {lastFertilizing.Format("Jan 02")}
+                                if plant.LastFertilizing != nil {
+                                    {plant.LastFertilizing.Format("Jan 02")}
                                 } else {
                                     {"No record"}
                                 }
