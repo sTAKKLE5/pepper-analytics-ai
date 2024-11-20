@@ -93,6 +93,13 @@ templ NewPlantForm() {
                       value={time.Now().Format("2006-01-02")}
                       required/>
            </div>
+            <div class="mb-3">
+                <label class="form-label">Cross</label>
+                <select class="form-select" name="cross" required>
+                   <option value="No">No</option>
+                   <option value="Yes">Yes</option>
+                </select>
+            </div>
            <div class="mb-3">
                <label class="form-label">Health</label>
                <select class="form-select" name="health" required>
@@ -168,6 +175,13 @@ templ EditPlantForm(plant types.PlantWithDates) {
                       value={plant.PlantingDate.Format("2006-01-02")}
                       required/>
            </div>
+            <div class="mb-3">
+                <label class="form-label">Cross</label>
+                <select class="form-select" name="cross" required>
+                    <option value="No" selected?={!plant.IsCross}>No</option>
+                    <option value="Yes" selected?={plant.IsCross}>Yes</option>
+                </select>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Health</label>
                 <select class="form-select" name="health" required>
