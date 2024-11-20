@@ -1,4 +1,3 @@
-// templates/pages/journal.templ
 package pages
 
 import (
@@ -114,11 +113,11 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                                            <label class="form-label">Type</label>
                                            <select class="form-select" name="entry_type" required>
                                                <option value="General">General Note</option>
-                                               <option value="Watering">🌧️ Watering</option>
-                                               <option value="Fertilizing">🌱 Fertilizing</option>
-                                               <option value="Pruning">✂️ Pruning</option>
-                                               <option value="Problem">⚠️ Problem</option>
-                                               <option value="Growth">📈 Growth</option>
+                                               <option value="Watering">Watering</option>
+                                               <option value="Fertilizing">Fertilizing</option>
+                                               <option value="Pruning">Pruning</option>
+                                               <option value="Problem">Problem</option>
+                                               <option value="Growth">Growth</option>
                                            </select>
                                        </div>
                                        <div class="col-md-6 mb-3">
@@ -252,11 +251,11 @@ templ EditJournalEntry(entry types.JournalEntry) {
                    <label class="form-label">Type</label>
                    <select class="form-select" name="entry_type" required>
                        <option value="General" selected?={entry.EntryType == "General"}>General Note</option>
-                       <option value="Watering" selected?={entry.EntryType == "Watering"}>🌧️ Watering</option>
-                       <option value="Fertilizing" selected?={entry.EntryType == "Fertilizing"}>🌱 Fertilizing</option>
-                       <option value="Pruning" selected?={entry.EntryType == "Pruning"}>✂️ Pruning</option>
-                       <option value="Problem" selected?={entry.EntryType == "Problem"}>⚠️ Problem</option>
-                       <option value="Growth" selected?={entry.EntryType == "Growth"}>📈 Growth</option>
+                       <option value="Watering" selected?={entry.EntryType == "Watering"}>Watering</option>
+                       <option value="Fertilizing" selected?={entry.EntryType == "Fertilizing"}>Fertilizing</option>
+                       <option value="Pruning" selected?={entry.EntryType == "Pruning"}>Pruning</option>
+                       <option value="Problem" selected?={entry.EntryType == "Problem"}>Problem</option>
+                       <option value="Growth" selected?={entry.EntryType == "Growth"}>Growth</option>
                    </select>
                </div>
                <div class="mb-3">
