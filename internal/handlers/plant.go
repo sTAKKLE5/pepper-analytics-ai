@@ -297,3 +297,25 @@ func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "text/html")
 	templ.Handler(pages.JournalEntry(*entry)).ServeHTTP(c.Writer, c.Request)
 }
+
+func (h *PlantHandler) HandleDeleteJournalEntry(c *gin.Context) {
+	plantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entryID, err := strconv.Atoi(c.Param("entryId"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	if err := h.plantService.DeleteJournalEntry(plantID, entryID); err != nil {
+		log.Printf("Error deleting journal entry: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}

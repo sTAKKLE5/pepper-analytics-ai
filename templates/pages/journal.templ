@@ -1,160 +1,182 @@
+// templates/pages/journal.templ
 package pages
 
 import (
-    "fmt"
-    "pepper-analytics-ai/templates/layout"
-    "pepper-analytics-ai/internal/types"
-    "time"
+   "fmt"
+   "time"
+   "pepper-analytics-ai/templates/layout"
+   "pepper-analytics-ai/internal/types"
 )
 
 templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
-    @layout.Base(layout.BaseProps{Title: fmt.Sprintf("Journal - %s", plant.Name)}) {
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2>Plant Journal - {plant.Name}</h2>
-                    <p class="text-muted">{string(plant.Species)}</p>
-                </div>
-                <a href={ templ.SafeURL("/") } class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Plants
-                </a>
-            </div>
+   @layout.Base(layout.BaseProps{Title: fmt.Sprintf("Journal - %s", plant.Name)}) {
+       <div class="container mt-4">
+           <div class="d-flex justify-content-between align-items-center mb-4">
+               <div>
+                   <h2>Plant Journal - {plant.Name}</h2>
+                   <p class="text-muted">{string(plant.Species)}</p>
+               </div>
+               <a href={ templ.SafeURL("/") } class="btn btn-outline-secondary">
+                   <i class="bi bi-arrow-left"></i> Back to Plants
+               </a>
+           </div>
 
-            <div class="row">
-                <!-- Plant Info Sidebar -->
-                <div class="col-md-3">
-                <div class="card mb-4">
-                    if plant.ImagePath != "" {
-                        <img src={plant.ImagePath} class="card-img-top" alt={plant.Name}/>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">{plant.Name}</h5>
-                        <div class="mb-2">
-                            <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
-                            <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
-                        </div>
-                        <div class="mb-2">
-                            <span class="badge bg-info me-2">
-                                <i class="bi bi-droplet me-1"></i>
-                                Watering️:
-                                if plant.LastWatering != nil {
-                                    {plant.LastWatering.Format("Jan 02")}
-                                } else {
-                                    {"No record"}
-                                }
-                            </span>
-                            <span class="badge bg-success">
-                                <i class="bi bi-flower1 me-1"></i>
-                                Fertilizing:
-                                if plant.LastFertilizing != nil {
-                                    {plant.LastFertilizing.Format("Jan 02")}
-                                } else {
-                                    {"No record"}
-                                }
-                            </span>
-                        </div>
-                        if plant.Notes != "" {
-                            <p class="card-text small mt-3">{plant.Notes}</p>
-                        }
-                    </div>
-                </div>
-            </div>
+           <div class="row">
+               <!-- Plant Info Sidebar -->
+               <div class="col-md-3">
+                   <div class="card mb-4">
+                       if plant.ImagePath != "" {
+                           <img src={plant.ImagePath} class="card-img-top" alt={plant.Name}/>
+                       }
+                       <div class="card-body">
+                           <h5 class="card-title">{plant.Name}</h5>
+                           <div class="mb-2">
+                               <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
+                               <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
+                           </div>
+                           <div class="mb-2">
+                               <span class="badge bg-info me-2">
+                                   <i class="bi bi-droplet me-1"></i>
+                                   Watering:
+                                   if plant.LastWatering != nil {
+                                       {plant.LastWatering.Format("Jan 02")}
+                                   } else {
+                                       {"No record"}
+                                   }
+                               </span>
+                               <span class="badge bg-success">
+                                   <i class="bi bi-flower1 me-1"></i>
+                                   Fertilizing:
+                                   if plant.LastFertilizing != nil {
+                                       {plant.LastFertilizing.Format("Jan 02")}
+                                   } else {
+                                       {"No record"}
+                                   }
+                               </span>
+                           </div>
+                           if plant.Notes != "" {
+                               <p class="card-text small mt-3">{plant.Notes}</p>
+                           }
+                       </div>
+                   </div>
+               </div>
 
+               <!-- Journal Content -->
+               <div class="col-md-9">
+                   <div class="mb-4">
+                       <div class="card">
+                           <div class="card-body">
+                               <h5 class="card-title mb-3">Add New Entry</h5>
+                               <form id="journalForm"
+                                     class="bg-light"
+                                     hx-post={fmt.Sprintf("/plants/%d/journal", plant.ID)}
+                                     hx-encoding="multipart/form-data"
+                                     hx-target="#journalEntries"
+                                     hx-swap="afterbegin"
+                                     hx-on::after-request="this.reset()">
+                                   <div class="row">
+                                       <div class="col-md-8 mb-3">
+                                           <label class="form-label">Title</label>
+                                           <input type="text"
+                                                  class="form-control"
+                                                  name="title"
+                                                  placeholder="e.g., Weekly Update"
+                                                  required/>
+                                       </div>
+                                       <div class="col-md-4 mb-3">
+                                           <label class="form-label">Date</label>
+                                           <input type="date"
+                                                  class="form-control"
+                                                  name="entry_date"
+                                                  value={time.Now().Format("2006-01-02")}
+                                                  required/>
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-6 mb-3">
+                                           <label class="form-label">Type</label>
+                                           <select class="form-select" name="entry_type" required>
+                                               <option value="General">General Note</option>
+                                               <option value="Watering">🌧️ Watering</option>
+                                               <option value="Fertilizing">🌱 Fertilizing</option>
+                                               <option value="Pruning">✂️ Pruning</option>
+                                               <option value="Problem">⚠️ Problem</option>
+                                               <option value="Growth">📈 Growth</option>
+                                           </select>
+                                       </div>
+                                       <div class="col-md-6 mb-3">
+                                           <label class="form-label">Image</label>
+                                           <input type="file" class="form-control" name="image" accept="image/*"/>
+                                       </div>
+                                   </div>
+                                   <div class="mb-3">
+                                       <label class="form-label">Description</label>
+                                       <textarea class="form-control"
+                                                name="description"
+                                                rows="3"
+                                                placeholder="Describe what's happening with your plant..."
+                                                required></textarea>
+                                   </div>
+                                   <button type="submit" class="btn btn-primary">Add Entry</button>
+                               </form>
+                           </div>
+                       </div>
+                   </div>
 
-                <!-- Journal Content -->
-                <div class="col-md-9">
-                    <div class="mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">Add New Entry</h5>
-                                <form id="journalForm"
-                              class="bg-light"
-                              hx-post={fmt.Sprintf("/plants/%d/journal", plant.ID)}
-                              hx-encoding="multipart/form-data"
-                              hx-target="#journalEntries"
-                              hx-swap="afterbegin"
-                              hx-on::after-request="this.reset()">
-                            <div class="row">
-                                <div class="col-md-8 mb-3">
-                                    <label class="form-label">Title</label>
-                                    <input type="text" class="form-control" name="title" placeholder="e.g., Weekly Update" required/>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Date</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           name="entry_date"
-                                           value={time.Now().Format("2006-01-02")}
-                                           required/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Type</label>
-                                    <select class="form-select" name="entry_type" required>
-                                        <option value="General">General Note</option>
-                                        <option value="Watering">🌧️ Watering</option>
-                                        <option value="Fertilizing">🌱 Fertilizing</option>
-                                        <option value="Pruning">✂️ Pruning</option>
-                                        <option value="Problem">⚠️ Problem</option>
-                                        <option value="Growth">📈 Growth</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Image</label>
-                                    <input type="file" class="form-control" name="image" accept="image/*"/>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control"
-                                         name="description"
-                                         rows="3"
-                                         placeholder="Describe what's happening with your plant..."
-                                         required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Entry</button>
-                        </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Journal Entries List -->
-                    <div id="journalEntries">
-                        for _, entry := range entries {
-                            <div class="card mb-3">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-info">{entry.EntryType}</span>
-                                    <small class="text-muted">{entry.EntryDate.Format("Jan 02, 2006")}</small>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">{entry.Title}</h6>
-                                    <p class="card-text">{entry.Description}</p>
-                                    if entry.ImagePath != "" {
-                                        <img src={entry.ImagePath} class="img-fluid rounded mt-2" alt="Journal image"/>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+                   <!-- Journal Entries List -->
+                   <div id="journalEntries">
+                       for _, entry := range entries {
+                           <div class="card mb-3" id={fmt.Sprintf("journal-entry-%d", entry.ID)}>
+                               <div class="card-header d-flex justify-content-between align-items-center">
+                                   <div>
+                                       <span class="badge bg-info">{entry.EntryType}</span>
+                                       <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
+                                   </div>
+                                   <button class="btn btn-sm btn-outline-danger"
+                                           hx-delete={fmt.Sprintf("/plants/%d/journal/%d", plant.ID, entry.ID)}
+                                           hx-confirm="Are you sure you want to delete this entry?"
+                                           hx-target={fmt.Sprintf("#journal-entry-%d", entry.ID)}
+                                           hx-swap="outerHTML">
+                                       <i class="bi bi-trash"></i>
+                                   </button>
+                               </div>
+                               <div class="card-body">
+                                   <h6 class="card-title">{entry.Title}</h6>
+                                   <p class="card-text">{entry.Description}</p>
+                                   if entry.ImagePath != "" {
+                                       <img src={entry.ImagePath} class="img-fluid rounded mt-2" alt="Journal image"/>
+                                   }
+                               </div>
+                           </div>
+                       }
+                   </div>
+               </div>
+           </div>
+       </div>
+   }
 }
 
 templ JournalEntry(entry types.JournalEntry) {
-    <div class="card mb-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span class="badge bg-info">{entry.EntryType}</span>
-            <small class="text-muted">{entry.EntryDate.Format("Jan 02, 2006")}</small>
-        </div>
-        <div class="card-body">
-            <h6 class="card-title">{entry.Title}</h6>
-            <p class="card-text">{entry.Description}</p>
-            if entry.ImagePath != "" {
-                <img src={entry.ImagePath} class="img-fluid rounded mt-2" alt="Journal image"/>
-            }
-        </div>
-    </div>
+   <div class="card mb-3" id={fmt.Sprintf("journal-entry-%d", entry.ID)}>
+       <div class="card-header d-flex justify-content-between align-items-center">
+           <div>
+               <span class="badge bg-info">{entry.EntryType}</span>
+               <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
+           </div>
+           <button class="btn btn-sm btn-outline-danger"
+                   hx-delete={fmt.Sprintf("/plants/%d/journal/%d", entry.PlantID, entry.ID)}
+                   hx-confirm="Are you sure you want to delete this entry?"
+                   hx-target={fmt.Sprintf("#journal-entry-%d", entry.ID)}
+                   hx-swap="outerHTML">
+               <i class="bi bi-trash"></i>
+           </button>
+       </div>
+       <div class="card-body">
+           <h6 class="card-title">{entry.Title}</h6>
+           <p class="card-text">{entry.Description}</p>
+           if entry.ImagePath != "" {
+               <img src={entry.ImagePath} class="img-fluid rounded mt-2" alt="Journal image"/>
+           }
+       </div>
+   </div>
 }

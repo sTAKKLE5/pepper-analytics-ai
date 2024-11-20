@@ -286,3 +286,23 @@ func (s *PlantService) GetPlantsWithLastDates() ([]types.PlantWithDates, error) 
 	err := s.db.Select(&plants, query)
 	return plants, err
 }
+
+func (s *PlantService) DeleteJournalEntry(plantID, entryID int) error {
+	query := `
+        DELETE FROM journal_entries 
+        WHERE id = $1 AND plant_id = $2
+    `
+	result, err := s.db.Exec(query, entryID, plantID)
+	if err != nil {
+		return fmt.Errorf("error deleting journal entry: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("journal entry not found")
+	}
+	return nil
+}
