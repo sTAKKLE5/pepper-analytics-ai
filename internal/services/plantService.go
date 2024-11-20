@@ -1,10 +1,12 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"log"
 	"pepper-analytics-ai/internal/types"
+	"time"
 )
 
 type PlantService struct {
@@ -138,4 +140,42 @@ func (s *PlantService) CreateJournalEntry(entry *types.JournalEntry) error {
 	}
 
 	return nil
+}
+
+func (s *PlantService) GetLastWateringDate(plantID int) (*time.Time, error) {
+	var entryDate time.Time
+	query := `
+        SELECT entry_date 
+        FROM journal_entries 
+        WHERE plant_id = $1 AND entry_type = 'Watering'
+        ORDER BY entry_date DESC 
+        LIMIT 1
+    `
+	err := s.db.Get(&entryDate, query, plantID)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &entryDate, nil
+}
+
+func (s *PlantService) GetLastFertilizingDate(plantID int) (*time.Time, error) {
+	var entryDate time.Time
+	query := `
+        SELECT entry_date 
+        FROM journal_entries 
+        WHERE plant_id = $1 AND entry_type = 'Fertilizing'
+        ORDER BY entry_date DESC 
+        LIMIT 1
+    `
+	err := s.db.Get(&entryDate, query, plantID)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &entryDate, nil
 }

@@ -253,7 +253,19 @@ func (h *PlantHandler) HandleJournal(c *gin.Context) {
 		return
 	}
 
-	component := pages.Journal(*plant, entries)
+	lastWatering, err := h.plantService.GetLastWateringDate(plantID)
+	if err != nil {
+		log.Printf("Error getting last watering date: %v", err)
+		// Don't return error, just continue without the date
+	}
+
+	lastFertilizing, err := h.plantService.GetLastFertilizingDate(plantID)
+	if err != nil {
+		log.Printf("Error getting last fertilizing date: %v", err)
+		// Don't return error, just continue without the date
+	}
+
+	component := pages.Journal(*plant, entries, lastWatering, lastFertilizing)
 	c.Writer.Header().Set("Content-Type", "text/html")
 	component.Render(context.Background(), c.Writer)
 }
@@ -285,7 +297,7 @@ func (h *PlantHandler) HandleCreateJournalEntry(c *gin.Context) {
 	if err == nil {
 		defer file.Close()
 
-		filePath := fmt.Sprintf("%s/journal/%s", h.uploadDir, header.Filename)
+		filePath := fmt.Sprintf("/%s/journal/%s", h.uploadDir, header.Filename)
 		if err := h.fileService.SaveFile(file, filePath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save image"})
 			return
