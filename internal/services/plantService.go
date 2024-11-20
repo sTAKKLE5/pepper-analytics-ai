@@ -311,11 +311,13 @@ func (s *PlantService) GetJournalEntry(entryID, plantID int) (*types.JournalEntr
 	var entry types.JournalEntry
 	query := `
         SELECT * FROM journal_entries 
-        WHERE id = $1 AND plant_id = $2
+        WHERE id = $1 
+        AND plant_id = $2 
+        AND deleted_at IS NULL
     `
 	err := s.db.Get(&entry, query, entryID, plantID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting journal entry: %w", err)
 	}
 	return &entry, nil
 }

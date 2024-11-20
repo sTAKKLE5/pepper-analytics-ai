@@ -335,14 +335,17 @@ func (h *PlantHandler) HandleEditJournalEntry(c *gin.Context) {
 
 	entry, err := h.plantService.GetJournalEntry(entryID, plantID)
 	if err != nil {
+		log.Printf("Error getting journal entry: %v", err)
 		c.Status(http.StatusNotFound)
 		return
 	}
 
-	component := pages.EditJournalEntry(*entry)
-	_ = component.Render(context.Background(), c.Writer)
+	if err := pages.EditJournalEntry(*entry).Render(context.Background(), c.Writer); err != nil {
+		log.Printf("Error rendering edit form: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 }
-
 func (h *PlantHandler) HandleUpdateJournalEntry(c *gin.Context) {
 	plantID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
