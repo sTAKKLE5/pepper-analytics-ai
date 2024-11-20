@@ -8,6 +8,23 @@ import (
    "pepper-analytics-ai/internal/types"
 )
 
+func getEntryTypeColor(entryType string) string {
+   switch entryType {
+   case "Problem":
+       return "bg-danger"
+   case "Watering":
+       return "bg-info"
+   case "Fertilizing":
+       return "bg-success"
+   case "Growth":
+       return "bg-primary"
+   case "Pruning":
+       return "bg-warning"
+   default:
+       return "bg-secondary"
+   }
+}
+
 templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
    @layout.Base(layout.BaseProps{Title: fmt.Sprintf("Journal - %s", plant.Name)}) {
        <div class="container mt-4">
@@ -129,8 +146,8 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                            <div class="card mb-3" id={fmt.Sprintf("journal-entry-%d", entry.ID)}>
                                <div class="card-header d-flex justify-content-between align-items-center">
                                    <div>
-                                       <span class="badge bg-info">{entry.EntryType}</span>
-                                       <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
+                                      <span class={fmt.Sprintf("badge %s", getEntryTypeColor(entry.EntryType))}>{entry.EntryType}</span>
+                                      <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
                                    </div>
                                    <button class="btn btn-sm btn-outline-danger"
                                            hx-delete={fmt.Sprintf("/plants/%d/journal/%d", plant.ID, entry.ID)}
@@ -160,8 +177,8 @@ templ JournalEntry(entry types.JournalEntry) {
    <div class="card mb-3" id={fmt.Sprintf("journal-entry-%d", entry.ID)}>
        <div class="card-header d-flex justify-content-between align-items-center">
            <div>
-               <span class="badge bg-info">{entry.EntryType}</span>
-               <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
+              <span class={fmt.Sprintf("badge %s", getEntryTypeColor(entry.EntryType))}>{entry.EntryType}</span>
+              <small class="text-muted ms-2">{entry.EntryDate.Format("Jan 02, 2006")}</small>
            </div>
            <button class="btn btn-sm btn-outline-danger"
                    hx-delete={fmt.Sprintf("/plants/%d/journal/%d", entry.PlantID, entry.ID)}
