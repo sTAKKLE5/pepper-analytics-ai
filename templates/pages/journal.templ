@@ -69,13 +69,11 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                                        {"No record"}
                                    }
                                </span>
-                           </div>
-                           <div class="mb-2">
-                                <span class="badge bg-secondary">
+                               <span class="badge bg-secondary">
                                 <i class="bi bi-calendar me-1"></i>
                                 Age: {getAgeString(plant.PlantingDate)}
                             </span>
-                            </div>
+                           </div>
                            if plant.Notes != "" {
                                <p class="card-text small mt-3">{plant.Notes}</p>
                            }

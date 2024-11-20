@@ -624,14 +624,14 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"mb-2\"><span class=\"badge bg-secondary\"><i class=\"bi bi-calendar me-1\"></i> Age: ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"badge bg-secondary\"><i class=\"bi bi-calendar me-1\"></i> Age: ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(getAgeString(plant.PlantingDate))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 248, Col: 70}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 246, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -644,7 +644,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d/edit", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 253, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 251, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -657,7 +657,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 260, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 258, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
@@ -670,7 +670,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var26 string
 			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#plant-%d", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 262, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 260, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 			if templ_7745c5c3_Err != nil {

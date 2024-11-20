@@ -241,13 +241,11 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                     {"No record"}
                                 }
                             </span>
-                        </div>
-                       <div class="mb-2">
-                        <span class="badge bg-secondary">
+                            <span class="badge bg-secondary">
                             <i class="bi bi-calendar me-1"></i>
                                 Age: {getAgeString(plant.PlantingDate)}
                             </span>
-                            </div>
+                        </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-outline-primary"
                                     hx-get={fmt.Sprintf("/plants/%d/edit", plant.ID)}
