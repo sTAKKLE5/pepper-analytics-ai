@@ -7,6 +7,27 @@ import (
     "time"
 )
 
+func getAgeString(plantingDate time.Time) string {
+    age := time.Since(plantingDate)
+    days := int(age.Hours() / 24)
+
+    if days < 30 {
+        return fmt.Sprintf("%d days", days)
+    }
+
+    months := days / 30
+    if months < 12 {
+        return fmt.Sprintf("%d months", months)
+    }
+
+    years := months / 12
+    remainingMonths := months % 12
+    if remainingMonths == 0 {
+        return fmt.Sprintf("%d years", years)
+    }
+    return fmt.Sprintf("%dy %dm", years, remainingMonths)
+}
+
 templ Plant(plants []types.PlantWithDates) {
     @layout.Base(layout.BaseProps{Title: "My Plants"}) {
         <div class="container mt-4">
@@ -213,6 +234,12 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                 }
                             </span>
                         </div>
+                       <div class="mb-2">
+                        <span class="badge bg-secondary">
+                            <i class="bi bi-calendar me-1"></i>
+                                Age: {getAgeString(plant.PlantingDate)}
+                            </span>
+                            </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-outline-primary"
                                     hx-get={fmt.Sprintf("/plants/%d/edit", plant.ID)}
