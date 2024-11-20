@@ -55,6 +55,7 @@ type Plant struct {
 	DeletedAt      *time.Time  `db:"deleted_at"`
 	CreatedAt      time.Time   `db:"created_at"`
 	UpdatedAt      time.Time   `db:"updated_at"`
+	IsCross        bool        `db:"is_cross"`
 }
 
 type PlantWithDates struct {
@@ -71,6 +72,7 @@ type PlantWithDates struct {
 	DeletedAt       *time.Time  `db:"deleted_at"`
 	LastWatering    *time.Time  `db:"last_watered_at"`
 	LastFertilizing *time.Time  `db:"last_fertilized_at"`
+	IsCross         bool        `db:"is_cross"`
 }
 
 type JournalEntry struct {

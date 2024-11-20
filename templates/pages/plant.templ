@@ -221,6 +221,9 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                         <div class="mb-2">
                             <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
                             <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
+                            if plant.IsCross {
+                                <span class="badge bg-warning  me-2">Cross</span>
+                            }
                         </div>
                         <div class="mb-2">
                             <span class="badge bg-info me-2">
