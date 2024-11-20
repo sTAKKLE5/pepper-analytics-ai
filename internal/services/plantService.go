@@ -306,3 +306,43 @@ func (s *PlantService) DeleteJournalEntry(plantID, entryID int) error {
 	}
 	return nil
 }
+
+func (s *PlantService) GetJournalEntry(entryID, plantID int) (*types.JournalEntry, error) {
+	var entry types.JournalEntry
+	query := `
+        SELECT * FROM journal_entries 
+        WHERE id = $1 
+        AND plant_id = $2 
+        AND deleted_at IS NULL
+    `
+	err := s.db.Get(&entry, query, entryID, plantID)
+	if err != nil {
+		return nil, fmt.Errorf("error getting journal entry: %w", err)
+	}
+	return &entry, nil
+}
+
+func (s *PlantService) UpdateJournalEntry(entry *types.JournalEntry) error {
+	query := `
+        UPDATE journal_entries 
+        SET title = $1, 
+            entry_type = $2, 
+            description = $3, 
+            entry_date = $4,
+            image_path = COALESCE($5, image_path),
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $6 AND plant_id = $7
+        RETURNING created_at, updated_at
+    `
+
+	return s.db.QueryRow(
+		query,
+		entry.Title,
+		entry.EntryType,
+		entry.Description,
+		entry.EntryDate,
+		entry.ImagePath,
+		entry.ID,
+		entry.PlantID,
+	).Scan(&entry.CreatedAt, &entry.UpdatedAt)
+}

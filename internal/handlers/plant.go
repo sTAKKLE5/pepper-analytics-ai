@@ -319,3 +319,80 @@ func (h *PlantHandler) HandleDeleteJournalEntry(c *gin.Context) {
 
 	c.Status(http.StatusOK)
 }
+
+func (h *PlantHandler) HandleEditJournalEntry(c *gin.Context) {
+	plantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entryID, err := strconv.Atoi(c.Param("entryId"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entry, err := h.plantService.GetJournalEntry(entryID, plantID)
+	if err != nil {
+		log.Printf("Error getting journal entry: %v", err)
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	if err := pages.EditJournalEntry(*entry).Render(context.Background(), c.Writer); err != nil {
+		log.Printf("Error rendering edit form: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+}
+func (h *PlantHandler) HandleUpdateJournalEntry(c *gin.Context) {
+	plantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entryID, err := strconv.Atoi(c.Param("entryId"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	entryDate, err := time.Parse("2006-01-02", c.PostForm("entry_date"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid entry date"})
+		return
+	}
+
+	entry := &types.JournalEntry{
+		ID:          entryID,
+		PlantID:     plantID,
+		Title:       c.PostForm("title"),
+		EntryType:   c.PostForm("entry_type"),
+		Description: c.PostForm("description"),
+		EntryDate:   entryDate,
+	}
+
+	// Handle image upload if present
+	file, header, err := c.Request.FormFile("image")
+	if err == nil {
+		defer file.Close()
+
+		filePath := fmt.Sprintf("%s/journal/%s", h.uploadDir, header.Filename)
+		if err := h.fileService.SaveFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save image"})
+			return
+		}
+		entry.ImagePath = filePath
+	}
+
+	if err := h.plantService.UpdateJournalEntry(entry); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update entry"})
+		return
+	}
+
+	// Return the updated entry
+	c.Writer.Header().Set("Content-Type", "text/html")
+	templ.Handler(pages.JournalEntry(*entry)).ServeHTTP(c.Writer, c.Request)
+}

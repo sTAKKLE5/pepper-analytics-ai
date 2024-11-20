@@ -74,15 +74,16 @@ type PlantWithDates struct {
 }
 
 type JournalEntry struct {
-	ID          int       `db:"id"`
-	PlantID     int       `db:"plant_id"`
-	Title       string    `db:"title"`
-	EntryType   string    `db:"entry_type"`
-	Description string    `db:"description"`
-	ImagePath   string    `db:"image_path"`
-	EntryDate   time.Time `db:"entry_date"`
-	CreatedAt   time.Time `db:"created_at"`
-	UpdatedAt   time.Time `db:"updated_at"`
+	ID          int        `db:"id"`
+	PlantID     int        `db:"plant_id"`
+	Title       string     `db:"title"`
+	EntryType   string     `db:"entry_type"`
+	Description string     `db:"description"`
+	ImagePath   string     `db:"image_path"`
+	EntryDate   time.Time  `db:"entry_date"`
+	CreatedAt   time.Time  `db:"created_at"`
+	UpdatedAt   time.Time  `db:"updated_at"`
+	DeletedAt   *time.Time `db:"deleted_at"`
 }
 
 func ParsePlantHealth(s string) (PlantHealth, error) {

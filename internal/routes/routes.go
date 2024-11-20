@@ -46,6 +46,9 @@ func SetupRouter(config RouterConfig) (*gin.Engine, error) {
 	router.POST("/plants/:id/journal", plantHandler.HandleCreateJournalEntry)
 	router.DELETE("/plants/:id/journal/:entryId", plantHandler.HandleDeleteJournalEntry)
 
+	router.GET("/plants/:id/journal/:entryId/edit", plantHandler.HandleEditJournalEntry)
+	router.PUT("/plants/:id/journal/:entryId", plantHandler.HandleUpdateJournalEntry)
+
 	// 404 handler
 	router.NoRoute(plantHandler.HandlePlantList) // Redirects all unknown routes to plant list
 
