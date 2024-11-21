@@ -30,13 +30,29 @@ func NewPlantHandler(plantService *services.PlantService, fileService *services.
 }
 
 func (h *PlantHandler) HandlePlantList(c *gin.Context) {
-	plants, err := h.plantService.GetPlantsWithLastDates()
+	// Get filter parameters
+	growthStageFilter := c.Query("growth_stage_filter")
+	speciesFilter := c.Query("species_filter")
+	crossFilter := c.Query("cross_filter")
+
+	// Get all plants with dates
+	plants, err := h.plantService.GetPlantsWithFilters(growthStageFilter, speciesFilter, crossFilter)
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
+	// If it's an HTMX request, only return the grid
+	if c.GetHeader("HX-Request") == "true" {
+		if err := pages.PlantsGrid(plants).Render(context.Background(), c.Writer); err != nil {
+			log.Printf("Error rendering grid: %v", err)
+			c.Status(http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Otherwise return the full page
 	if err := pages.Plant(plants).Render(context.Background(), c.Writer); err != nil {
 		log.Printf("Error rendering template: %v", err)
 		c.Status(http.StatusInternalServerError)

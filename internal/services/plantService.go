@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"log"
 	"pepper-analytics-ai/internal/types"
+	"strings"
 	"time"
 )
 
@@ -372,4 +373,75 @@ func (s *PlantService) UpdateJournalEntry(entry *types.JournalEntry) error {
 		entry.ID,
 		entry.PlantID,
 	).Scan(&entry.CreatedAt, &entry.UpdatedAt)
+}
+
+func (s *PlantService) GetPlantsWithFilters(growthStage, species, cross string) ([]types.PlantWithDates, error) {
+	query := `
+        WITH LastWatering AS (
+            SELECT plant_id, entry_date as last_watered_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Watering'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Watering'
+            )
+        ),
+        LastFertilizing AS (
+            SELECT plant_id, entry_date as last_fertilized_at
+            FROM journal_entries je1
+            WHERE entry_type = 'Fertilizing'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM journal_entries je2
+                WHERE je2.plant_id = je1.plant_id
+                AND entry_type = 'Fertilizing'
+            )
+        )
+        SELECT p.*, 
+               lw.last_watered_at,
+               lf.last_fertilized_at
+        FROM plants p
+        LEFT JOIN LastWatering lw ON p.id = lw.plant_id
+        LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
+        WHERE p.deleted_at IS NULL
+    `
+
+	var args []interface{}
+	var conditions []string
+	argPosition := 1
+
+	if growthStage != "" {
+		conditions = append(conditions, fmt.Sprintf("p.growth_stage = $%d", argPosition))
+		args = append(args, growthStage)
+		argPosition++
+	}
+
+	if species != "" {
+		conditions = append(conditions, fmt.Sprintf("p.species = $%d", argPosition))
+		args = append(args, species)
+		argPosition++
+	}
+
+	if cross != "" {
+		conditions = append(conditions, fmt.Sprintf("p.is_cross = $%d", argPosition))
+		crossBool := cross == "true"
+		args = append(args, crossBool)
+		argPosition++
+	}
+
+	if len(conditions) > 0 {
+		query += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	query += " ORDER BY p.created_at DESC"
+
+	var plants []types.PlantWithDates
+	err := s.db.Select(&plants, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching plants with filters: %w", err)
+	}
+
+	return plants, nil
 }
