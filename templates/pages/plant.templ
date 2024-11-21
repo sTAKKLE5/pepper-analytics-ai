@@ -98,21 +98,23 @@ templ NewPlantForm() {
                 <label class="form-label">Cross</label>
                 <select class="form-select"
                         name="cross"
+                        id="crossSelect"
                         required
-                        onchange="toggleGenerationField(this)">
+                        onchange="handleCrossChange(this)">
                    <option value="No">No</option>
                    <option value="Yes">Yes</option>
                 </select>
             </div>
 
-            <div class="mb-3" id="generationField">
-                <label class="form-label">Generation</label>
-                <input type="text"
-                       class="form-control"
-                       name="generation"
-                       placeholder="e.g., F1, F2, etc."
-                       data-generation-input
-                       style="display: none;"/>
+            <div id="generationContainer" class="d-none">
+                <div class="mb-3">
+                    <label class="form-label">Generation</label>
+                    <input type="text"
+                           class="form-control"
+                           id="generationInput"
+                           name="generation"
+                           placeholder="e.g., F1, F2, etc."/>
+                </div>
             </div>
 
            <div class="mb-3">
@@ -149,14 +151,15 @@ templ NewPlantForm() {
    </div>
 
    <script>
-    function toggleGenerationField(selectElement) {
-        const generationInput = document.querySelector('[data-generation-input]');
+    function handleCrossChange(selectElement) {
+        const generationContainer = document.getElementById('generationContainer');
+        const generationInput = document.getElementById('generationInput');
 
         if (selectElement.value === 'Yes') {
-            generationInput.style.display = 'block';
+            generationContainer.classList.remove('d-none');
             generationInput.required = true;
         } else {
-            generationInput.style.display = 'none';
+            generationContainer.classList.add('d-none');
             generationInput.required = false;
             generationInput.value = '';
         }
@@ -208,31 +211,25 @@ templ EditPlantForm(plant types.PlantWithDates) {
                 <label class="form-label">Cross</label>
                 <select class="form-select"
                         name="cross"
+                        id="crossSelect"
                         required
-                        onchange="toggleGenerationField(this)">
+                        onchange="handleCrossChange(this)">
                     <option value="No" selected?={!plant.IsCross}>No</option>
                     <option value="Yes" selected?={plant.IsCross}>Yes</option>
                 </select>
             </div>
 
-            <div class="mb-3" id="generationField">
-                <label class="form-label">Generation</label>
-                if plant.IsCross {
-            <input type="text"
-                   class="form-control"
-                   name="generation"
-                   placeholder="e.g., F1, F2, etc."
-                   value={plant.Generation.String}
-                   data-generation-input
-                   required/>
-        } else {
-            <input type="text"
-                   class="form-control"
-                   name="generation"
-                   placeholder="e.g., F1, F2, etc."
-                   data-generation-input
-                   style="display: none;"/>
-        }
+            <div id="generationContainer" class={templ.KV("d-none", !plant.IsCross)}>
+                <div class="mb-3">
+                    <label class="form-label">Generation</label>
+                    <input type="text"
+                           class="form-control"
+                           id="generationInput"
+                           name="generation"
+                           placeholder="e.g., F1, F2, etc."
+                           value={plant.Generation.String}
+                           required?={plant.IsCross}/>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -272,24 +269,25 @@ templ EditPlantForm(plant types.PlantWithDates) {
     </div>
 
     <script>
-    function toggleGenerationField(selectElement) {
-        const generationInput = document.querySelector('[data-generation-input]');
+        function handleCrossChange(selectElement) {
+            const generationContainer = document.getElementById('generationContainer');
+            const generationInput = document.getElementById('generationInput');
 
-        if (selectElement.value === 'Yes') {
-            generationInput.style.display = 'block';
-            generationInput.required = true;
-        } else {
-            generationInput.style.display = 'none';
-            generationInput.required = false;
-            generationInput.value = '';
+            if (selectElement.value === 'Yes') {
+                generationContainer.classList.remove('d-none');
+                generationInput.required = true;
+            } else {
+                generationContainer.classList.add('d-none');
+                generationInput.required = false;
+                generationInput.value = '';
+            }
         }
-    }
 
-    // Initialize the generation field visibility
-    document.addEventListener('DOMContentLoaded', function() {
-        const crossSelect = document.querySelector('select[name="cross"]');
-        toggleGenerationField(crossSelect);
-    });
+        // Initialize the generation field visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const crossSelect = document.getElementById('crossSelect');
+            handleCrossChange(crossSelect);
+        });
     </script>
 }
 
