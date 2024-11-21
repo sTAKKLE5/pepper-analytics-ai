@@ -31,6 +31,29 @@ func getAgeString(plantingDate time.Time) string {
 templ Plant(plants []types.PlantWithDates) {
     @layout.Base(layout.BaseProps{Title: "My Plants"}) {
         <div class="container mt-4">
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0">My Plants</h2>
+                    <small class="text-muted">
+                        if len(plants) == 1 {
+                            { "Showing 1 plant" }
+                        } else {
+                            { fmt.Sprintf("Showing %d plants", len(plants)) }
+                        }
+                    </small>
+                </div>
+                <button class="btn btn-primary"
+                        hx-get="/plants/new"
+                        hx-target="#modal-content"
+                        data-bs-toggle="modal"
+                        data-bs-target="#plantModal">
+                    Add Plant
+                </button>
+            </div>
+
+
             <!-- Search/Filter Section -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -105,26 +128,6 @@ templ Plant(plants []types.PlantWithDates) {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-0">My Plants</h2>
-                    <small class="text-muted">
-                        if len(plants) == 1 {
-                            { "Showing 1 plant" }
-                        } else {
-                            { fmt.Sprintf("Showing %d plants", len(plants)) }
-                        }
-                    </small>
-                </div>
-                <button class="btn btn-primary"
-                        hx-get="/plants/new"
-                        hx-target="#modal-content"
-                        data-bs-toggle="modal"
-                        data-bs-target="#plantModal">
-                    Add Plant
-                </button>
             </div>
 
             @PlantsGrid(plants)

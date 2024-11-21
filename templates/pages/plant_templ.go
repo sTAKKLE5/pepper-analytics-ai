@@ -69,7 +69,7 @@ func Plant(plants []types.PlantWithDates) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container mt-4\"><!-- Search/Filter Section --><div class=\"card mb-4\"><div class=\"card-body\"><div class=\"row g-3\"><div class=\"col-md-3\"><label class=\"form-label\">Growth Stage</label> <select class=\"form-select\" name=\"growth_stage_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;species_filter&#39;],[name=&#39;cross_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Stages</option> <option value=\"Seedling\">Seedling</option> <option value=\"Vegetative\">Vegetative</option> <option value=\"Flowering\">Flowering</option> <option value=\"Fruiting\">Fruiting</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Species</label> <select class=\"form-select\" name=\"species_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;cross_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Species</option> <option value=\"Capsicum annuum\">Capsicum annuum</option> <option value=\"Capsicum chinense\">Capsicum chinense</option> <option value=\"Capsicum baccatum\">Capsicum baccatum</option> <option value=\"Capsicum frutescens\">Capsicum frutescens</option> <option value=\"Capsicum pubescens\">Capsicum pubescens</option> <option value=\"Capsicum rhomboideum\">Capsicum rhomboideum</option> <option value=\"Capsicum praetermissum\">Capsicum praetermissum</option> <option value=\"Capsicum cardenasii\">Capsicum cardenasii</option> <option value=\"Capsicum eximium\">Capsicum eximium</option> <option value=\"Capsicum galapagoense\">Capsicum galapagoense</option> <option value=\"Capsicum flexuosum\">Capsicum flexuosum</option> <option value=\"Capsicum exile\">Capsicum exile</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Cross Status</label> <select class=\"form-select\" name=\"cross_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;species_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Plants</option> <option value=\"true\">Crosses Only</option> <option value=\"false\">Non-Crosses Only</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Harvest Status</label> <select class=\"form-select\" name=\"harvest_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;species_filter&#39;],[name=&#39;cross_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Plants</option> <option value=\"false\">Active Only</option> <option value=\"true\">Harvested Only</option></select></div></div></div></div><div class=\"d-flex justify-content-between align-items-center mb-4\"><div><h2 class=\"mb-0\">My Plants</h2><small class=\"text-muted\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container mt-4\"><div class=\"d-flex justify-content-between align-items-center mb-4\"><div><h2 class=\"mb-0\">My Plants</h2><small class=\"text-muted\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -77,7 +77,7 @@ func Plant(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("Showing 1 plant")
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 115, Col: 47}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 41, Col: 47}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -87,14 +87,14 @@ func Plant(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Showing %d plants", len(plants)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 117, Col: 75}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 43, Col: 75}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</small></div><button class=\"btn btn-primary\" hx-get=\"/plants/new\" hx-target=\"#modal-content\" data-bs-toggle=\"modal\" data-bs-target=\"#plantModal\">Add Plant</button></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</small></div><button class=\"btn btn-primary\" hx-get=\"/plants/new\" hx-target=\"#modal-content\" data-bs-toggle=\"modal\" data-bs-target=\"#plantModal\">Add Plant</button></div><!-- Search/Filter Section --><div class=\"card mb-4\"><div class=\"card-body\"><div class=\"row g-3\"><div class=\"col-md-3\"><label class=\"form-label\">Growth Stage</label> <select class=\"form-select\" name=\"growth_stage_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;species_filter&#39;],[name=&#39;cross_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Stages</option> <option value=\"Seedling\">Seedling</option> <option value=\"Vegetative\">Vegetative</option> <option value=\"Flowering\">Flowering</option> <option value=\"Fruiting\">Fruiting</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Species</label> <select class=\"form-select\" name=\"species_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;cross_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Species</option> <option value=\"Capsicum annuum\">Capsicum annuum</option> <option value=\"Capsicum chinense\">Capsicum chinense</option> <option value=\"Capsicum baccatum\">Capsicum baccatum</option> <option value=\"Capsicum frutescens\">Capsicum frutescens</option> <option value=\"Capsicum pubescens\">Capsicum pubescens</option> <option value=\"Capsicum rhomboideum\">Capsicum rhomboideum</option> <option value=\"Capsicum praetermissum\">Capsicum praetermissum</option> <option value=\"Capsicum cardenasii\">Capsicum cardenasii</option> <option value=\"Capsicum eximium\">Capsicum eximium</option> <option value=\"Capsicum galapagoense\">Capsicum galapagoense</option> <option value=\"Capsicum flexuosum\">Capsicum flexuosum</option> <option value=\"Capsicum exile\">Capsicum exile</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Cross Status</label> <select class=\"form-select\" name=\"cross_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;species_filter&#39;],[name=&#39;harvest_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Plants</option> <option value=\"true\">Crosses Only</option> <option value=\"false\">Non-Crosses Only</option></select></div><div class=\"col-md-3\"><label class=\"form-label\">Harvest Status</label> <select class=\"form-select\" name=\"harvest_filter\" hx-get=\"/\" hx-target=\"#plantGrid\" hx-trigger=\"change\" hx-include=\"[name=&#39;growth_stage_filter&#39;],[name=&#39;species_filter&#39;],[name=&#39;cross_filter&#39;]\" hx-push-url=\"true\"><option value=\"\">All Plants</option> <option value=\"false\">Active Only</option> <option value=\"true\">Harvested Only</option></select></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -144,7 +144,7 @@ func NewPlantForm() templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 198, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 201, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -186,7 +186,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d", plant.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 282, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 285, Col: 57}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +199,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 288, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 291, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -332,7 +332,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(plant.PlantingDate.Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 312, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 315, Col: 68}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -387,7 +387,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Generation.String)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 335, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 338, Col: 57}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -505,7 +505,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(plant.ImagePath)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 363, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 366, Col: 45}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -523,7 +523,7 @@ func EditPlantForm(plant types.PlantWithDates) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Notes)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 368, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 371, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
@@ -570,7 +570,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("plant-%d", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 403, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 406, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -610,7 +610,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var20 string
 				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(plant.ImagePath)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 406, Col: 49}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 409, Col: 49}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 				if templ_7745c5c3_Err != nil {
@@ -623,7 +623,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 406, Col: 87}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 409, Col: 87}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -641,7 +641,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 409, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 412, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 			if templ_7745c5c3_Err != nil {
@@ -654,7 +654,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(string(plant.Species))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 411, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 414, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -667,7 +667,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(string(plant.GrowthStage))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 414, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 417, Col: 90}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -680,7 +680,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(string(plant.Health))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 415, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 418, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
@@ -699,7 +699,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 					var templ_7745c5c3_Var26 string
 					templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(" " + plant.Generation.String)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 420, Col: 71}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 423, Col: 71}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 					if templ_7745c5c3_Err != nil {
@@ -720,7 +720,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 					var templ_7745c5c3_Var27 string
 					templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(" on " + plant.HarvestedAt.Time.Format("Jan 02, 2006"))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 428, Col: 96}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 431, Col: 96}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 					if templ_7745c5c3_Err != nil {
@@ -740,7 +740,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var28 string
 				templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(plant.LastWatering.Format("Jan 02"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 438, Col: 72}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 441, Col: 72}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 				if templ_7745c5c3_Err != nil {
@@ -750,7 +750,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var29 string
 				templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs("No record")
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 440, Col: 48}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 443, Col: 48}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 				if templ_7745c5c3_Err != nil {
@@ -765,7 +765,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var30 string
 				templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(plant.LastFertilizing.Format("Jan 02"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 447, Col: 75}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 450, Col: 75}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 				if templ_7745c5c3_Err != nil {
@@ -775,7 +775,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var31 string
 				templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs("No record")
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 449, Col: 48}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 452, Col: 48}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
 				if templ_7745c5c3_Err != nil {
@@ -790,7 +790,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var32 string
 				templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs("Age: " + getAgeString(plant.PlantingDate))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 455, Col: 80}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 458, Col: 80}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
 				if templ_7745c5c3_Err != nil {
@@ -800,7 +800,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var33 string
 				templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs("Final age: " + getAgeString(plant.PlantingDate))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 457, Col: 86}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 460, Col: 86}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 				if templ_7745c5c3_Err != nil {
@@ -814,7 +814,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var34 string
 			templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d/edit", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 463, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 466, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
 			if templ_7745c5c3_Err != nil {
@@ -832,7 +832,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				var templ_7745c5c3_Var35 string
 				templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d/harvest", plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 471, Col: 91}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 474, Col: 91}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
 				if templ_7745c5c3_Err != nil {
@@ -850,7 +850,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var36 string
 			templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/plants/%d", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 480, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 483, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 			if templ_7745c5c3_Err != nil {
@@ -863,7 +863,7 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 			var templ_7745c5c3_Var37 string
 			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#plant-%d", plant.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 482, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 485, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 			if templ_7745c5c3_Err != nil {
