@@ -129,6 +129,7 @@ templ NewPlantForm() {
            <div class="mb-3">
                <label class="form-label">Growth Stage</label>
                <select class="form-select" name="growth_stage" required>
+                   <option value="Seed">Seed</option>
                    <option value="Seedling">Seedling</option>
                    <option value="Vegetative">Vegetative</option>
                    <option value="Flowering">Flowering</option>
@@ -244,6 +245,7 @@ templ EditPlantForm(plant types.PlantWithDates) {
             <div class="mb-3">
                 <label class="form-label">Growth Stage</label>
                 <select class="form-select" name="growth_stage" required>
+                    <option value="Seed" selected?={string(plant.GrowthStage) == "Seed"}>Seed</option>
                     <option value="Seedling" selected?={string(plant.GrowthStage) == "Seedling"}>Seedling</option>
                     <option value="Vegetative" selected?={string(plant.GrowthStage) == "Vegetative"}>Vegetative</option>
                     <option value="Flowering" selected?={string(plant.GrowthStage) == "Flowering"}>Flowering</option>

@@ -18,6 +18,7 @@ const (
 type GrowthStage string
 
 const (
+	GrowthStageSeed       GrowthStage = "Seed"
 	GrowthStageSeedling   GrowthStage = "Seedling"
 	GrowthStageVegetative GrowthStage = "Vegetative"
 	GrowthStageFlowering  GrowthStage = "Flowering"
@@ -108,6 +109,8 @@ func ParsePlantHealth(s string) (PlantHealth, error) {
 
 func ParseGrowthStage(s string) (GrowthStage, error) {
 	switch s {
+	case "Seed":
+		return GrowthStageSeed, nil
 	case "Seedling":
 		return GrowthStageSeedling, nil
 	case "Vegetative":
