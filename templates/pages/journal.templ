@@ -50,7 +50,12 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                                <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
                                <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
                                 if plant.IsCross {
-                                    <span class="badge bg-warning  me-2">Cross</span>
+                                    <span class="badge bg-warning me-2">
+                                        Cross
+                                        if plant.Generation.Valid {
+                                            { " " + plant.Generation.String }
+                                        }
+                                    </span>
                                 }
                            </div>
                            <div class="mb-2">
