@@ -49,14 +49,22 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                            <div class="mb-2">
                                <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
                                <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
-                                if plant.IsCross {
-                                    <span class="badge bg-warning me-2">
-                                        Cross
-                                        if plant.Generation.Valid {
-                                            { " " + plant.Generation.String }
-                                        }
-                                    </span>
-                                }
+                               if plant.IsCross {
+                                   <span class="badge bg-warning me-2">
+                                       Cross
+                                       if plant.Generation.Valid {
+                                           { " " + plant.Generation.String }
+                                       }
+                                   </span>
+                               }
+                               if plant.IsHarvested {
+                                   <span class="badge bg-success me-2">
+                                       Harvested
+                                       if plant.HarvestedAt.Valid {
+                                           { " on " + plant.HarvestedAt.Time.Format("Jan 02, 2006") }
+                                       }
+                                   </span>
+                               }
                            </div>
                            <div class="mb-2">
                                <span class="badge bg-info me-2">
@@ -78,9 +86,13 @@ templ Journal(plant types.PlantWithDates, entries []types.JournalEntry) {
                                    }
                                </span>
                                <span class="badge bg-secondary">
-                                <i class="bi bi-calendar me-1"></i>
-                                Age: {getAgeString(plant.PlantingDate)}
-                            </span>
+                                   <i class="bi bi-calendar me-1"></i>
+                                   if !plant.IsHarvested {
+                                       { "Age: " + getAgeString(plant.PlantingDate) }
+                                   } else {
+                                       { "Final age: " + getAgeString(plant.PlantingDate) }
+                                   }
+                               </span>
                            </div>
                            if plant.Notes != "" {
                                <p class="card-text small mt-3">{plant.Notes}</p>

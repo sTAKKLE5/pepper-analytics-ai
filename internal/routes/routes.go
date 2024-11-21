@@ -41,6 +41,7 @@ func SetupRouter(config RouterConfig) (*gin.Engine, error) {
 	router.GET("/plants/:id/edit", plantHandler.HandleEditPlantForm)
 	router.PUT("/plants/:id", plantHandler.HandleUpdatePlant)
 	router.DELETE("/plants/:id", plantHandler.HandleDeletePlant)
+	router.PUT("/plants/:id/harvest", plantHandler.HandleHarvestPlant)
 
 	// routes.go
 	router.GET("/plants/:id/journal", plantHandler.HandleJournal)

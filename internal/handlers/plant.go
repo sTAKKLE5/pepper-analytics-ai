@@ -34,9 +34,15 @@ func (h *PlantHandler) HandlePlantList(c *gin.Context) {
 	growthStageFilter := c.Query("growth_stage_filter")
 	speciesFilter := c.Query("species_filter")
 	crossFilter := c.Query("cross_filter")
+	harvestFilter := c.Query("harvest_filter")
 
-	// Get all plants with dates
-	plants, err := h.plantService.GetPlantsWithFilters(growthStageFilter, speciesFilter, crossFilter)
+	// Get all plants with dates and filters
+	plants, err := h.plantService.GetPlantsWithFilters(
+		growthStageFilter,
+		speciesFilter,
+		crossFilter,
+		harvestFilter,
+	)
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
@@ -135,8 +141,19 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 	// Set header to trigger modal close
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
-	// After successful creation, fetch all plants with dates and cross information
-	plants, err := h.plantService.GetPlantsWithLastDates() // Make sure this fetches cross and generation info
+	// Get any current filter values from the request
+	growthStageFilter := c.Query("growth_stage_filter")
+	speciesFilter := c.Query("species_filter")
+	crossFilter := c.Query("cross_filter")
+	harvestFilter := c.Query("harvest_filter")
+
+	// After successful creation, fetch all plants with dates and current filters
+	plants, err := h.plantService.GetPlantsWithFilters(
+		growthStageFilter,
+		speciesFilter,
+		crossFilter,
+		harvestFilter,
+	)
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
@@ -146,7 +163,6 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "text/html")
 	templ.Handler(pages.PlantsGrid(plants)).ServeHTTP(c.Writer, c.Request)
 }
-
 func (h *PlantHandler) HandleNewPlantForm(c *gin.Context) {
 	component := pages.NewPlantForm()
 	_ = component.Render(context.Background(), c.Writer)
@@ -241,8 +257,19 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	// Set header to trigger modal close
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
-	// After successful update, fetch all plants with dates
-	plants, err := h.plantService.GetPlantsWithLastDates() // This should fetch cross and generation info
+	// Get any current filter values from the request
+	growthStageFilter := c.Query("growth_stage_filter")
+	speciesFilter := c.Query("species_filter")
+	crossFilter := c.Query("cross_filter")
+	harvestFilter := c.Query("harvest_filter")
+
+	// After successful update, fetch all plants with dates and current filters
+	plants, err := h.plantService.GetPlantsWithFilters(
+		growthStageFilter,
+		speciesFilter,
+		crossFilter,
+		harvestFilter,
+	)
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
@@ -442,4 +469,43 @@ func (h *PlantHandler) HandleUpdateJournalEntry(c *gin.Context) {
 	// Return the updated entry
 	c.Writer.Header().Set("Content-Type", "text/html")
 	templ.Handler(pages.JournalEntry(*entry)).ServeHTTP(c.Writer, c.Request)
+}
+
+func (h *PlantHandler) HandleHarvestPlant(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	if err := h.plantService.MarkPlantAsHarvested(id); err != nil {
+		log.Printf("Error marking plant as harvested: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	// Get all plants with the current filters to maintain grid order
+	growthStageFilter := c.Query("growth_stage_filter")
+	speciesFilter := c.Query("species_filter")
+	crossFilter := c.Query("cross_filter")
+	harvestFilter := c.Query("harvest_filter")
+
+	plants, err := h.plantService.GetPlantsWithFilters(
+		growthStageFilter,
+		speciesFilter,
+		crossFilter,
+		harvestFilter,
+	)
+	if err != nil {
+		log.Printf("Error fetching plants: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	// Return the complete updated grid
+	c.Writer.Header().Set("Content-Type", "text/html")
+	if err := pages.PlantsGrid(plants).Render(context.Background(), c.Writer); err != nil {
+		log.Printf("Error rendering grid: %v", err)
+		c.Status(http.StatusInternalServerError)
+	}
 }
