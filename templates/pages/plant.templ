@@ -467,15 +467,15 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                 Edit
                             </button>
                             if !plant.IsHarvested {
-    <button class="btn btn-sm btn-outline-success"
-            hx-put={fmt.Sprintf("/plants/%d/harvest", plant.ID)}
-            hx-confirm="Mark this plant as harvested?"
-            hx-target="#plantGrid"
-            hx-include="[name='growth_stage_filter'],[name='species_filter'],[name='cross_filter'],[name='harvest_filter']"
-            hx-swap="outerHTML">
-        Mark Harvested
-    </button>
-}
+                                <button class="btn btn-sm btn-outline-success"
+                                        hx-put={fmt.Sprintf("/plants/%d/harvest", plant.ID)}
+                                        hx-confirm="Mark this plant as harvested?"
+                                        hx-target="#plantGrid"
+                                        hx-include="[name='growth_stage_filter'],[name='species_filter'],[name='cross_filter'],[name='harvest_filter']"
+                                        hx-swap="outerHTML">
+                                    Mark Harvested
+                                </button>
+                            }
                             <button class="btn btn-sm btn-outline-danger"
                                     hx-delete={fmt.Sprintf("/plants/%d", plant.ID)}
                                     hx-confirm="Are you sure you want to delete this plant?"
