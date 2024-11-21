@@ -311,7 +311,7 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                 <span class="badge bg-warning me-2">
                                     Cross
                                     if plant.Generation.Valid {
-                                        { plant.Generation.String }
+                                        { " " + plant.Generation.String }
                                     }
                                 </span>
                             }

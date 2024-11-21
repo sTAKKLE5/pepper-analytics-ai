@@ -640,9 +640,9 @@ func PlantsGrid(plants []types.PlantWithDates) templ.Component {
 				}
 				if plant.Generation.Valid {
 					var templ_7745c5c3_Var22 string
-					templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Generation.String)
+					templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(" " + plant.Generation.String)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 314, Col: 65}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/pages/plant.templ`, Line: 314, Col: 71}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 					if templ_7745c5c3_Err != nil {

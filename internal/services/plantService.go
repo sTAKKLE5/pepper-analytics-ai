@@ -292,7 +292,9 @@ func (s *PlantService) GetPlantsWithLastDates() ([]types.PlantWithDates, error) 
         )
         SELECT p.*, 
                lw.last_watered_at,
-               lf.last_fertilized_at
+               lf.last_fertilized_at,
+               p.is_cross,
+               p.generation
         FROM plants p
         LEFT JOIN LastWatering lw ON p.id = lw.plant_id
         LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
@@ -301,7 +303,10 @@ func (s *PlantService) GetPlantsWithLastDates() ([]types.PlantWithDates, error) 
     `
 	var plants []types.PlantWithDates
 	err := s.db.Select(&plants, query)
-	return plants, err
+	if err != nil {
+		return nil, fmt.Errorf("error fetching plants with dates: %w", err)
+	}
+	return plants, nil
 }
 
 func (s *PlantService) DeleteJournalEntry(plantID, entryID int) error {

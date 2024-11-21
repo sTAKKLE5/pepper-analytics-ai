@@ -84,6 +84,7 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 			Valid:  true,
 		}
 	}
+
 	plant := &types.PlantWithDates{
 		Name:         c.PostForm("name"),
 		Species:      species,
@@ -118,8 +119,8 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 	// Set header to trigger modal close
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
-	// After successful creation, fetch all plants with dates
-	plants, err := h.plantService.GetPlants()
+	// After successful creation, fetch all plants with dates and cross information
+	plants, err := h.plantService.GetPlantsWithLastDates() // Make sure this fetches cross and generation info
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
