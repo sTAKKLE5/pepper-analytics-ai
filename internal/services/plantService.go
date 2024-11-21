@@ -101,10 +101,16 @@ func (s *PlantService) GetPlant(id int) (*types.PlantWithDates, error) {
 func (s *PlantService) CreatePlant(plant *types.PlantWithDates) error {
 	query := `
         INSERT INTO plants (
-            name, species, health, growth_stage, planting_date, image_path, notes
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            name, species, health, growth_stage, planting_date, 
+            image_path, notes, is_cross, generation
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id, created_at, updated_at
     `
+
+	// Set generation to NULL if not a cross
+	if !plant.IsCross {
+		plant.Generation = sql.NullString{}
+	}
 
 	return s.db.QueryRow(
 		query,
@@ -115,6 +121,8 @@ func (s *PlantService) CreatePlant(plant *types.PlantWithDates) error {
 		plant.PlantingDate,
 		plant.ImagePath,
 		plant.Notes,
+		plant.IsCross,
+		plant.Generation,
 	).Scan(&plant.ID, &plant.CreatedAt, &plant.UpdatedAt)
 }
 
@@ -122,8 +130,14 @@ func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 	query := `
         UPDATE plants 
         SET name = $1, species = $2, health = $3, growth_stage = $4,
-            image_path = $5, notes = $6, planting_date = $7, updated_at = CURRENT_TIMESTAMP
-        WHERE id = $8 AND deleted_at IS NULL`
+            image_path = $5, notes = $6, planting_date = $7, is_cross = $8,
+            generation = $9, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $10 AND deleted_at IS NULL`
+
+	// Set generation to NULL if not a cross
+	if !plant.IsCross {
+		plant.Generation = sql.NullString{}
+	}
 
 	result, err := s.db.Exec(
 		query,
@@ -134,6 +148,8 @@ func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 		plant.ImagePath,
 		plant.Notes,
 		plant.PlantingDate,
+		plant.IsCross,
+		plant.Generation,
 		plant.ID,
 	)
 	if err != nil {

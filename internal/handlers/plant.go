@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
@@ -74,6 +75,15 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 		return
 	}
 
+	// Parse the cross status and generation
+	isCross := c.PostForm("cross") == "Yes"
+	generation := sql.NullString{}
+	if isCross {
+		generation = sql.NullString{
+			String: c.PostForm("generation"),
+			Valid:  true,
+		}
+	}
 	plant := &types.PlantWithDates{
 		Name:         c.PostForm("name"),
 		Species:      species,
@@ -81,6 +91,8 @@ func (h *PlantHandler) HandleCreatePlant(c *gin.Context) {
 		Health:       health,
 		GrowthStage:  growthStage,
 		Notes:        c.PostForm("notes"),
+		IsCross:      isCross,
+		Generation:   generation,
 	}
 
 	// Handle image upload
@@ -175,6 +187,17 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	}
 
 	plant.Notes = c.PostForm("notes")
+
+	// Update cross status and generation
+	plant.IsCross = c.PostForm("cross") == "Yes"
+	if plant.IsCross {
+		plant.Generation = sql.NullString{
+			String: c.PostForm("generation"),
+			Valid:  true,
+		}
+	} else {
+		plant.Generation = sql.NullString{}
+	}
 
 	// Handle new image upload
 	file, header, err := c.Request.FormFile("image")

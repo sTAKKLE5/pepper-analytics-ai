@@ -52,6 +52,7 @@ templ Plant(plants []types.PlantWithDates) {
         </div>
     }
 }
+
 templ NewPlantForm() {
    <div class="modal-header">
        <h5 class="modal-title">Add New Plant</h5>
@@ -93,6 +94,27 @@ templ NewPlantForm() {
                       value={time.Now().Format("2006-01-02")}
                       required/>
            </div>
+            <div class="mb-3">
+                <label class="form-label">Cross</label>
+                <select class="form-select"
+                        name="cross"
+                        required
+                        onchange="toggleGenerationField(this)">
+                   <option value="No">No</option>
+                   <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="generationField">
+                <label class="form-label">Generation</label>
+                <input type="text"
+                       class="form-control"
+                       name="generation"
+                       placeholder="e.g., F1, F2, etc."
+                       data-generation-input
+                       style="display: none;"/>
+            </div>
+
            <div class="mb-3">
                <label class="form-label">Health</label>
                <select class="form-select" name="health" required>
@@ -125,6 +147,21 @@ templ NewPlantForm() {
        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
        <button type="submit" class="btn btn-primary" form="plantForm">Add Plant</button>
    </div>
+
+   <script>
+    function toggleGenerationField(selectElement) {
+        const generationInput = document.querySelector('[data-generation-input]');
+
+        if (selectElement.value === 'Yes') {
+            generationInput.style.display = 'block';
+            generationInput.required = true;
+        } else {
+            generationInput.style.display = 'none';
+            generationInput.required = false;
+            generationInput.value = '';
+        }
+    }
+   </script>
 }
 
 templ EditPlantForm(plant types.PlantWithDates) {
@@ -145,19 +182,18 @@ templ EditPlantForm(plant types.PlantWithDates) {
             <div class="mb-3">
                 <label class="form-label">Species</label>
                 <select class="form-select" name="species" required>
-                <option value="Capsicum annuum" selected?={string(plant.Species) == "Capsicum annuum"}>Capsicum annuum</option>
-                <option value="Capsicum chinense" selected?={string(plant.Species) == "Capsicum chinense"}>Capsicum chinense</option>
-                <option value="Capsicum baccatum" selected?={string(plant.Species) == "Capsicum baccatum"}>Capsicum baccatum</option>
-                <option value="Capsicum frutescens" selected?={string(plant.Species) == "Capsicum frutescens"}>Capsicum frutescens</option>
-                <option value="Capsicum pubescens" selected?={string(plant.Species) == "Capsicum pubescens"}>Capsicum pubescens</option>
-                <option value="Capsicum rhomboideum" selected?={string(plant.Species) == "Capsicum rhomboideum"}>Capsicum rhomboideum</option>
-                <option value="Capsicum praetermissum" selected?={string(plant.Species) == "Capsicum praetermissum"}>Capsicum praetermissum</option>
-                <option value="Capsicum cardenasii" selected?={string(plant.Species) == "Capsicum cardenasii"}>Capsicum cardenasii</option>
-                <option value="Capsicum eximium" selected?={string(plant.Species) == "Capsicum eximium"}>Capsicum eximium</option>
-                <option value="Capsicum galapagoense" selected?={string(plant.Species) == "Capsicum galapagoense"}>Capsicum galapagoense</option>
-                <option value="Capsicum flexuosum" selected?={string(plant.Species) == "Capsicum flexuosum"}>Capsicum flexuosum</option>
-                <option value="Capsicum flexuosum" selected?={string(plant.Species) == "Capsicum flexuosum"}>Capsicum flexuosum</option>
-                <option value="Capsicum exile" selected?={string(plant.Species) == "Capsicum exile"}>Capsicum exile</option>
+                    <option value="Capsicum annuum" selected?={string(plant.Species) == "Capsicum annuum"}>Capsicum annuum</option>
+                    <option value="Capsicum chinense" selected?={string(plant.Species) == "Capsicum chinense"}>Capsicum chinense</option>
+                    <option value="Capsicum baccatum" selected?={string(plant.Species) == "Capsicum baccatum"}>Capsicum baccatum</option>
+                    <option value="Capsicum frutescens" selected?={string(plant.Species) == "Capsicum frutescens"}>Capsicum frutescens</option>
+                    <option value="Capsicum pubescens" selected?={string(plant.Species) == "Capsicum pubescens"}>Capsicum pubescens</option>
+                    <option value="Capsicum rhomboideum" selected?={string(plant.Species) == "Capsicum rhomboideum"}>Capsicum rhomboideum</option>
+                    <option value="Capsicum praetermissum" selected?={string(plant.Species) == "Capsicum praetermissum"}>Capsicum praetermissum</option>
+                    <option value="Capsicum cardenasii" selected?={string(plant.Species) == "Capsicum cardenasii"}>Capsicum cardenasii</option>
+                    <option value="Capsicum eximium" selected?={string(plant.Species) == "Capsicum eximium"}>Capsicum eximium</option>
+                    <option value="Capsicum galapagoense" selected?={string(plant.Species) == "Capsicum galapagoense"}>Capsicum galapagoense</option>
+                    <option value="Capsicum flexuosum" selected?={string(plant.Species) == "Capsicum flexuosum"}>Capsicum flexuosum</option>
+                    <option value="Capsicum exile" selected?={string(plant.Species) == "Capsicum exile"}>Capsicum exile</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -168,6 +204,37 @@ templ EditPlantForm(plant types.PlantWithDates) {
                       value={plant.PlantingDate.Format("2006-01-02")}
                       required/>
            </div>
+            <div class="mb-3">
+                <label class="form-label">Cross</label>
+                <select class="form-select"
+                        name="cross"
+                        required
+                        onchange="toggleGenerationField(this)">
+                    <option value="No" selected?={!plant.IsCross}>No</option>
+                    <option value="Yes" selected?={plant.IsCross}>Yes</option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="generationField">
+                <label class="form-label">Generation</label>
+                if plant.IsCross {
+            <input type="text"
+                   class="form-control"
+                   name="generation"
+                   placeholder="e.g., F1, F2, etc."
+                   value={plant.Generation.String}
+                   data-generation-input
+                   required/>
+        } else {
+            <input type="text"
+                   class="form-control"
+                   name="generation"
+                   placeholder="e.g., F1, F2, etc."
+                   data-generation-input
+                   style="display: none;"/>
+        }
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Health</label>
                 <select class="form-select" name="health" required>
@@ -203,6 +270,27 @@ templ EditPlantForm(plant types.PlantWithDates) {
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary" form="plantForm">Save Changes</button>
     </div>
+
+    <script>
+    function toggleGenerationField(selectElement) {
+        const generationInput = document.querySelector('[data-generation-input]');
+
+        if (selectElement.value === 'Yes') {
+            generationInput.style.display = 'block';
+            generationInput.required = true;
+        } else {
+            generationInput.style.display = 'none';
+            generationInput.required = false;
+            generationInput.value = '';
+        }
+    }
+
+    // Initialize the generation field visibility
+    document.addEventListener('DOMContentLoaded', function() {
+        const crossSelect = document.querySelector('select[name="cross"]');
+        toggleGenerationField(crossSelect);
+    });
+    </script>
 }
 
 templ PlantsGrid(plants []types.PlantWithDates) {
@@ -221,6 +309,14 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                         <div class="mb-2">
                             <span class="badge bg-primary me-2">{string(plant.GrowthStage)}</span>
                             <span class="badge bg-secondary me-2">{string(plant.Health)}</span>
+                            if plant.IsCross {
+                                <span class="badge bg-warning me-2">
+                                    Cross
+                                    if plant.Generation.Valid {
+                                        { plant.Generation.String }
+                                    }
+                                </span>
+                            }
                         </div>
                         <div class="mb-2">
                             <span class="badge bg-info me-2">
@@ -242,7 +338,7 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                 }
                             </span>
                             <span class="badge bg-secondary">
-                            <i class="bi bi-calendar me-1"></i>
+                                <i class="bi bi-calendar me-1"></i>
                                 Age: {getAgeString(plant.PlantingDate)}
                             </span>
                         </div>
