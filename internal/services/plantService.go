@@ -84,7 +84,9 @@ func (s *PlantService) GetPlant(id int) (*types.PlantWithDates, error) {
         )
         SELECT p.*, 
                lw.last_watered_at,
-               lf.last_fertilized_at
+               lf.last_fertilized_at,
+               p.is_cross,
+               p.generation
         FROM plants p
         LEFT JOIN LastWatering lw ON p.id = lw.plant_id
         LEFT JOIN LastFertilizing lf ON p.id = lf.plant_id
@@ -93,7 +95,10 @@ func (s *PlantService) GetPlant(id int) (*types.PlantWithDates, error) {
 	var plant types.PlantWithDates
 	err := s.db.Get(&plant, query, id)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("plant not found")
+		}
+		return nil, fmt.Errorf("error fetching plant: %w", err)
 	}
 	return &plant, nil
 }
@@ -129,17 +134,20 @@ func (s *PlantService) CreatePlant(plant *types.PlantWithDates) error {
 func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 	query := `
         UPDATE plants 
-        SET name = $1, species = $2, health = $3, growth_stage = $4,
-            image_path = $5, notes = $6, planting_date = $7, is_cross = $8,
-            generation = $9, updated_at = CURRENT_TIMESTAMP
-        WHERE id = $10 AND deleted_at IS NULL`
+        SET name = $1, 
+            species = $2, 
+            health = $3, 
+            growth_stage = $4,
+            image_path = $5, 
+            notes = $6, 
+            planting_date = $7, 
+            is_cross = $8,
+            generation = $9,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $10 AND deleted_at IS NULL
+        RETURNING created_at, updated_at`
 
-	// Set generation to NULL if not a cross
-	if !plant.IsCross {
-		plant.Generation = sql.NullString{}
-	}
-
-	result, err := s.db.Exec(
+	err := s.db.QueryRow(
 		query,
 		plant.Name,
 		plant.Species,
@@ -151,18 +159,15 @@ func (s *PlantService) UpdatePlant(plant *types.PlantWithDates) error {
 		plant.IsCross,
 		plant.Generation,
 		plant.ID,
-	)
+	).Scan(&plant.CreatedAt, &plant.UpdatedAt)
+
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrPlantNotFound
+		}
 		return err
 	}
 
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rows == 0 {
-		return ErrPlantNotFound
-	}
 	return nil
 }
 

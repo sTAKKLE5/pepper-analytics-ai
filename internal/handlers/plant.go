@@ -187,8 +187,6 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 		plant.GrowthStage = growthStage
 	}
 
-	plant.Notes = c.PostForm("notes")
-
 	// Update cross status and generation
 	plant.IsCross = c.PostForm("cross") == "Yes"
 	if plant.IsCross {
@@ -199,6 +197,8 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	} else {
 		plant.Generation = sql.NullString{}
 	}
+
+	plant.Notes = c.PostForm("notes")
 
 	// Handle new image upload
 	file, header, err := c.Request.FormFile("image")
@@ -226,7 +226,7 @@ func (h *PlantHandler) HandleUpdatePlant(c *gin.Context) {
 	c.Writer.Header().Set("HX-Trigger", "closeModal")
 
 	// After successful update, fetch all plants with dates
-	plants, err := h.plantService.GetPlants()
+	plants, err := h.plantService.GetPlantsWithLastDates() // This should fetch cross and generation info
 	if err != nil {
 		log.Printf("Error fetching plants: %v", err)
 		c.Status(http.StatusInternalServerError)
