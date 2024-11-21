@@ -35,6 +35,7 @@ func SetupRouter(config RouterConfig) (*gin.Engine, error) {
 	router.GET("/", plantHandler.HandlePlantList)
 
 	// Plant routes
+	router.GET("/plants", plantHandler.HandlePlantList)
 	router.GET("/plants/new", plantHandler.HandleNewPlantForm)
 	router.POST("/plants/create", plantHandler.HandleCreatePlant)
 	router.GET("/plants/:id/edit", plantHandler.HandleEditPlantForm)

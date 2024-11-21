@@ -42,6 +42,66 @@ templ Plant(plants []types.PlantWithDates) {
                 </button>
             </div>
 
+            <!-- Search/Filter Section -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Growth Stage</label>
+                            <select class="form-select"
+                                    name="growth_stage_filter"
+                                    hx-get="/plants"
+                                    hx-target="#plantGrid"
+                                    hx-trigger="change"
+                                    hx-include="[name='species_filter'],[name='cross_filter']">
+                                <option value="">All Stages</option>
+                                <option value="Seed">Seed</option>
+                                <option value="Seedling">Seedling</option>
+                                <option value="Vegetative">Vegetative</option>
+                                <option value="Flowering">Flowering</option>
+                                <option value="Fruiting">Fruiting</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Species</label>
+                            <select class="form-select"
+                                    name="species_filter"
+                                    hx-get="/plants"
+                                    hx-target="#plantGrid"
+                                    hx-trigger="change"
+                                    hx-include="[name='growth_stage_filter'],[name='cross_filter']">
+                                <option value="">All Species</option>
+                                <option value="Capsicum annuum">Capsicum annuum</option>
+                                <option value="Capsicum chinense">Capsicum chinense</option>
+                                <option value="Capsicum baccatum">Capsicum baccatum</option>
+                                <option value="Capsicum frutescens">Capsicum frutescens</option>
+                                <option value="Capsicum pubescens">Capsicum pubescens</option>
+                                <option value="Capsicum rhomboideum">Capsicum rhomboideum</option>
+                                <option value="Capsicum praetermissum">Capsicum praetermissum</option>
+                                <option value="Capsicum cardenasii">Capsicum cardenasii</option>
+                                <option value="Capsicum eximium">Capsicum eximium</option>
+                                <option value="Capsicum galapagoense">Capsicum galapagoense</option>
+                                <option value="Capsicum flexuosum">Capsicum flexuosum</option>
+                                <option value="Capsicum exile">Capsicum exile</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cross Status</label>
+                            <select class="form-select"
+                                    name="cross_filter"
+                                    hx-get="/plants"
+                                    hx-target="#plantGrid"
+                                    hx-trigger="change"
+                                    hx-include="[name='growth_stage_filter'],[name='species_filter']">
+                                <option value="">All Plants</option>
+                                <option value="true">Crosses Only</option>
+                                <option value="false">Non-Crosses Only</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @PlantsGrid(plants)
 
             <div class="modal fade" id="plantModal" tabindex="-1">
@@ -52,7 +112,6 @@ templ Plant(plants []types.PlantWithDates) {
         </div>
     }
 }
-
 templ NewPlantForm() {
    <div class="modal-header">
        <h5 class="modal-title">Add New Plant</h5>
