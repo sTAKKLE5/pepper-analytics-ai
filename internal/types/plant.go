@@ -59,6 +59,8 @@ type Plant struct {
 	UpdatedAt      time.Time      `db:"updated_at"`
 	IsCross        bool           `db:"is_cross"`
 	Generation     sql.NullString `db:"generation"`
+	IsHarvested    bool           `db:"is_harvested"`
+	HarvestedAt    sql.NullTime   `db:"harvested_at"`
 }
 
 type PlantWithDates struct {
@@ -77,6 +79,8 @@ type PlantWithDates struct {
 	LastFertilizing *time.Time     `db:"last_fertilized_at"`
 	IsCross         bool           `db:"is_cross"`
 	Generation      sql.NullString `db:"generation"`
+	IsHarvested     bool           `db:"is_harvested"`
+	HarvestedAt     sql.NullTime   `db:"harvested_at"`
 }
 
 type JournalEntry struct {

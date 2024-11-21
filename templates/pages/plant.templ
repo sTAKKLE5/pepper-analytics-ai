@@ -31,45 +31,35 @@ func getAgeString(plantingDate time.Time) string {
 templ Plant(plants []types.PlantWithDates) {
     @layout.Base(layout.BaseProps{Title: "My Plants"}) {
         <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>My Plants</h2>
-                <button class="btn btn-primary"
-                        hx-get="/plants/new"
-                        hx-target="#modal-content"
-                        data-bs-toggle="modal"
-                        data-bs-target="#plantModal">
-                    Add Plant
-                </button>
-            </div>
-
             <!-- Search/Filter Section -->
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Growth Stage</label>
                             <select class="form-select"
                                     name="growth_stage_filter"
-                                    hx-get="/plants"
+                                    hx-get="/"
                                     hx-target="#plantGrid"
                                     hx-trigger="change"
-                                    hx-include="[name='species_filter'],[name='cross_filter']">
+                                    hx-include="[name='species_filter'],[name='cross_filter'],[name='harvest_filter']"
+                                    hx-push-url="true">
                                 <option value="">All Stages</option>
-                                <option value="Seed">Seed</option>
                                 <option value="Seedling">Seedling</option>
                                 <option value="Vegetative">Vegetative</option>
                                 <option value="Flowering">Flowering</option>
                                 <option value="Fruiting">Fruiting</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Species</label>
                             <select class="form-select"
                                     name="species_filter"
-                                    hx-get="/plants"
+                                    hx-get="/"
                                     hx-target="#plantGrid"
                                     hx-trigger="change"
-                                    hx-include="[name='growth_stage_filter'],[name='cross_filter']">
+                                    hx-include="[name='growth_stage_filter'],[name='cross_filter'],[name='harvest_filter']"
+                                    hx-push-url="true">
                                 <option value="">All Species</option>
                                 <option value="Capsicum annuum">Capsicum annuum</option>
                                 <option value="Capsicum chinense">Capsicum chinense</option>
@@ -85,21 +75,56 @@ templ Plant(plants []types.PlantWithDates) {
                                 <option value="Capsicum exile">Capsicum exile</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Cross Status</label>
                             <select class="form-select"
                                     name="cross_filter"
-                                    hx-get="/plants"
+                                    hx-get="/"
                                     hx-target="#plantGrid"
                                     hx-trigger="change"
-                                    hx-include="[name='growth_stage_filter'],[name='species_filter']">
+                                    hx-include="[name='growth_stage_filter'],[name='species_filter'],[name='harvest_filter']"
+                                    hx-push-url="true">
                                 <option value="">All Plants</option>
                                 <option value="true">Crosses Only</option>
                                 <option value="false">Non-Crosses Only</option>
                             </select>
                         </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Harvest Status</label>
+                            <select class="form-select"
+                                    name="harvest_filter"
+                                    hx-get="/"
+                                    hx-target="#plantGrid"
+                                    hx-trigger="change"
+                                    hx-include="[name='growth_stage_filter'],[name='species_filter'],[name='cross_filter']"
+                                    hx-push-url="true">
+                                <option value="">All Plants</option>
+                                <option value="false">Active Only</option>
+                                <option value="true">Harvested Only</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0">My Plants</h2>
+                    <small class="text-muted">
+                        if len(plants) == 1 {
+                            { "Showing 1 plant" }
+                        } else {
+                            { fmt.Sprintf("Showing %d plants", len(plants)) }
+                        }
+                    </small>
+                </div>
+                <button class="btn btn-primary"
+                        hx-get="/plants/new"
+                        hx-target="#modal-content"
+                        data-bs-toggle="modal"
+                        data-bs-target="#plantModal">
+                    Add Plant
+                </button>
             </div>
 
             @PlantsGrid(plants)
@@ -109,6 +134,26 @@ templ Plant(plants []types.PlantWithDates) {
                     <div class="modal-content" id="modal-content"></div>
                 </div>
             </div>
+
+            <script>
+                // Set initial filter values from URL parameters
+                document.addEventListener('DOMContentLoaded', function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const filters = [
+                        'growth_stage_filter',
+                        'species_filter',
+                        'cross_filter',
+                        'harvest_filter'
+                    ];
+
+                    filters.forEach(filter => {
+                        const value = urlParams.get(filter);
+                        if (value) {
+                            document.querySelector(`[name="${filter}"]`).value = value;
+                        }
+                    });
+                });
+            </script>
         </div>
     }
 }
@@ -356,7 +401,7 @@ templ PlantsGrid(plants []types.PlantWithDates) {
     <div class="row g-4" id="plantGrid">
         for _, plant := range plants {
             <div class="col-md-4" id={fmt.Sprintf("plant-%d", plant.ID)}>
-                <div class="card h-100">
+                <div class={ "card h-100", templ.KV("bg-light", plant.IsHarvested) }>
                     if plant.ImagePath != "" {
                         <img src={plant.ImagePath} class="card-img-top" alt={plant.Name}/>
                     }
@@ -376,6 +421,14 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                     }
                                 </span>
                             }
+                            if plant.IsHarvested {
+                                <span class="badge bg-success me-2">
+                                    Harvested
+                                    if plant.HarvestedAt.Valid {
+                                        { " on " + plant.HarvestedAt.Time.Format("Jan 02, 2006") }
+                                    }
+                                </span>
+                            }
                         </div>
                         <div class="mb-2">
                             <span class="badge bg-info me-2">
@@ -387,7 +440,7 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                     {"No record"}
                                 }
                             </span>
-                            <span class="badge bg-success">
+                            <span class="badge bg-success me-2">
                                 <i class="bi bi-flower1 me-1"></i>
                                 Fertilizing:
                                 if plant.LastFertilizing != nil {
@@ -398,7 +451,11 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                             </span>
                             <span class="badge bg-secondary">
                                 <i class="bi bi-calendar me-1"></i>
-                                Age: {getAgeString(plant.PlantingDate)}
+                                if !plant.IsHarvested {
+                                    { "Age: " + getAgeString(plant.PlantingDate) }
+                                } else {
+                                    { "Final age: " + getAgeString(plant.PlantingDate) }
+                                }
                             </span>
                         </div>
                         <div class="d-flex gap-2">
@@ -409,6 +466,16 @@ templ PlantsGrid(plants []types.PlantWithDates) {
                                     data-bs-target="#plantModal">
                                 Edit
                             </button>
+                            if !plant.IsHarvested {
+    <button class="btn btn-sm btn-outline-success"
+            hx-put={fmt.Sprintf("/plants/%d/harvest", plant.ID)}
+            hx-confirm="Mark this plant as harvested?"
+            hx-target="#plantGrid"
+            hx-include="[name='growth_stage_filter'],[name='species_filter'],[name='cross_filter'],[name='harvest_filter']"
+            hx-swap="outerHTML">
+        Mark Harvested
+    </button>
+}
                             <button class="btn btn-sm btn-outline-danger"
                                     hx-delete={fmt.Sprintf("/plants/%d", plant.ID)}
                                     hx-confirm="Are you sure you want to delete this plant?"

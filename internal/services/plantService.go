@@ -375,7 +375,7 @@ func (s *PlantService) UpdateJournalEntry(entry *types.JournalEntry) error {
 	).Scan(&entry.CreatedAt, &entry.UpdatedAt)
 }
 
-func (s *PlantService) GetPlantsWithFilters(growthStage, species, cross string) ([]types.PlantWithDates, error) {
+func (s *PlantService) GetPlantsWithFilters(growthStage, species, cross, harvest string) ([]types.PlantWithDates, error) {
 	query := `
         WITH LastWatering AS (
             SELECT plant_id, entry_date as last_watered_at
@@ -431,6 +431,13 @@ func (s *PlantService) GetPlantsWithFilters(growthStage, species, cross string) 
 		argPosition++
 	}
 
+	if harvest != "" {
+		conditions = append(conditions, fmt.Sprintf("p.is_harvested = $%d", argPosition))
+		harvestedBool := harvest == "true"
+		args = append(args, harvestedBool)
+		argPosition++
+	}
+
 	if len(conditions) > 0 {
 		query += " AND " + strings.Join(conditions, " AND ")
 	}
@@ -444,4 +451,26 @@ func (s *PlantService) GetPlantsWithFilters(growthStage, species, cross string) 
 	}
 
 	return plants, nil
+}
+
+func (s *PlantService) MarkPlantAsHarvested(plantID int) error {
+	query := `
+        UPDATE plants 
+        SET is_harvested = true,
+            harvested_at = CURRENT_TIMESTAMP
+        WHERE id = $1 AND deleted_at IS NULL
+    `
+	result, err := s.db.Exec(query, plantID)
+	if err != nil {
+		return fmt.Errorf("error marking plant as harvested: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return ErrPlantNotFound
+	}
+	return nil
 }
